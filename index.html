@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Nisarani Family</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #1a1208;
+      color: #f0e6d0;
+      min-height: 100vh;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 18px 40px;
+      background: rgba(26, 18, 8, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(200, 160, 80, 0.2);
+    }
+
+    nav a {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #c8a050;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: #f0e6d0; }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.18;
+      filter: sepia(40%);
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+
+    .family-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(56px, 10vw, 96px);
+      font-weight: 600;
+      color: #f0e6d0;
+      line-height: 1.05;
+      letter-spacing: 0.04em;
+    }
+
+    .family-name span {
+      display: block;
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 400;
+      font-style: italic;
+      color: #c8a050;
+      letter-spacing: 0.12em;
+      margin-bottom: 12px;
+    }
+
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: #c8a050;
+      margin: 28px auto;
+      opacity: 0.6;
+    }
+
+    .tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(16px, 2.5vw, 20px);
+      font-style: italic;
+      color: #d4c4a0;
+      line-height: 1.7;
+      max-width: 520px;
+      margin: 0 auto 40px;
+    }
+
+    .cta {
+      display: inline-block;
+      padding: 12px 32px;
+      border: 1px solid #c8a050;
+      color: #c8a050;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .cta:hover {
+      background: #c8a050;
+      color: #1a1208;
+    }
+
+    .intro {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 80px 24px;
+      text-align: center;
+    }
+
+    .intro h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 400;
+      color: #c8a050;
+      margin-bottom: 24px;
+    }
+
+    .intro p {
+      font-size: 16px;
+      line-height: 1.9;
+      color: #c8b890;
+      font-weight: 300;
+    }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 13px;
+      color: #6b5a3a;
+      border-top: 1px solid rgba(200, 160, 80, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Our Roots</a>
+    <a href="#">Family Tree</a>
+    <a href="#">Events</a>
+  </nav>
+
+  <section class="hero">
+    <!-- Replace the src below with your family photo path when ready -->
+    <img class="hero-img" src="your-photo.jpg" alt="The Nisarani Family"/>
+    <div class="hero-content">
+      <div class="family-name">
+        <span>Welcome to</span>
+        Nisarani
+      </div>
+      <div class="divider"></div>
+      <p class="tagline">One family, many homes, one heart. This is our story — where we came from, who we are, and the thread that binds us across every distance.</p>
+      <a class="cta" href="#">Explore Our Story</a>
+    </div>
+  </section>
+
+  <section class="intro">
+    <h2>Our Family</h2>
+    <p>The Nisarani family spans generations and cities, yet our bonds have never loosened. This space is built for every member — young and old — to know their roots, recognise their people, and carry our story forward.</p>
+  </section>
+
+  <footer>
+    &copy; 2025 The Nisarani Family &nbsp;|&nbsp; Built with love
+  </footer>
+
+</body>
+</html>
