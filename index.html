@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>The Nisarani Family</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Tiro+Devanagari+Sanskrit:ital@0;1&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -44,8 +46,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 80px 24px;
+      justify-content: flex-end;
+      padding: 0 24px 70px;
       cursor: zoom-in;
     }
 
@@ -55,25 +57,26 @@
       width: 100%; height: 100%;
       object-fit: cover;
       opacity: 0.55;
-      transition: opacity 0.3s;
     }
-
-    .hero:hover .hero-img { opacity: 0.62; }
 
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(20, 38, 28, 0.55);
+      background: rgba(20, 38, 28, 0.52);
     }
 
     .hero-title {
-      position: relative;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       z-index: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       text-align: center;
+      white-space: nowrap;
     }
 
     .flowers svg { display: block; }
@@ -88,13 +91,12 @@
     .hero-content {
       position: relative;
       z-index: 1;
-      max-width: 680px;
+      max-width: 700px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       text-align: center;
-      margin-top: 28px;
     }
 
     .poetic {
@@ -201,19 +203,19 @@
               <stop offset="100%" stop-color="#f9a825"/>
             </radialGradient>
           </defs>
-          <g transform="translate(11,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-          <g transform="translate(33,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-          <g transform="translate(55,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-          <g transform="translate(77,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-          <g transform="translate(99,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-          <g transform="translate(121,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-          <g transform="translate(143,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-          <g transform="translate(165,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-          <g transform="translate(187,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-          <g transform="translate(209,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(11,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(33,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(55,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(77,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(99,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(121,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(143,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(165,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(187,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(209,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
         </svg>
       </div>
-      <div class="family-name">Nisarani Family</div>
+      <div class="family-name">The Nisarani Family</div>
     </div>
 
     <div class="hero-content">
