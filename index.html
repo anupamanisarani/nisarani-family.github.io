@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>The Nisarani Family</title>
-  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Tiro+Devanagari+Sanskrit:ital@0;1&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
+    html, body {
+      height: 100%;
+      overflow: hidden;
       font-family: 'Tiro Devanagari Sanskrit', serif;
-      background-color: #f5f0e8;
-      color: #2d4a3e;
     }
 
     nav {
@@ -39,15 +39,14 @@
     nav a:hover { color: #f5f0e8; }
 
     .hero {
-      min-height: 100vh;
+      position: fixed;
+      inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 100px 24px 60px;
-      position: relative;
-      overflow: hidden;
+      padding: 80px 24px 60px;
       cursor: zoom-in;
     }
 
@@ -60,28 +59,87 @@
       transition: opacity 0.3s;
     }
 
-    .hero:hover .hero-img { opacity: 0.65; }
+    .hero:hover .hero-img { opacity: 0.62; }
 
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, rgba(30,51,41,0.3) 0%, rgba(30,51,41,0.15) 50%, rgba(30,51,41,0.35) 100%);
+      background: rgba(20, 38, 28, 0.55);
     }
 
     .hero-content {
       position: relative;
       z-index: 1;
-      max-width: 700px;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
     }
 
-    .flowers svg { display: block; margin: 0 auto 16px; }
+    .flowers svg { display: block; }
 
     .family-name {
       font-family: 'Alex Brush', cursive;
-      font-size: clamp(64px, 11vw, 108px);
+      font-size: clamp(52px, 9vw, 96px);
       color: #f5f0e8;
       line-height: 1;
     }
+
+    .poetic {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: clamp(13px, 1.4vw, 15px);
+      font-style: italic;
+      color: #d4ede4;
+      line-height: 1.9;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: #a8c5a0;
+      opacity: 0.6;
+    }
+
+    .welcome-para {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: clamp(12px, 1.3vw, 14px);
+      color: #c8dfc8;
+      line-height: 1.85;
+      font-weight: 400;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      text-align: center;
+      padding: 14px 24px;
+      background: rgba(30, 51, 41, 0.92);
+      border-top: 1px solid rgba(168,197,160,0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      z-index: 100;
+    }
+
+    .footer-main {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 12px;
+      color: #a8c5a0;
+      letter-spacing: 0.04em;
+    }
+
+    .footer-creator {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 12px;
+      color: #6a9a7a;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+
+    .footer-creator:hover { color: #a8c5a0; }
 
     .lightbox {
       display: none;
@@ -111,68 +169,6 @@
       font-weight: 300;
       line-height: 1;
     }
-
-    .welcome {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 80px 24px;
-      text-align: center;
-    }
-
-    .welcome-note {
-      font-family: 'Tiro Devanagari Sanskrit', serif;
-      font-size: 17px;
-      font-style: italic;
-      line-height: 2;
-      color: #2d4a3e;
-      margin-bottom: 40px;
-    }
-
-    .welcome-note p { margin-bottom: 8px; }
-
-    .divider {
-      width: 48px;
-      height: 1px;
-      background: #a8c5a0;
-      margin: 0 auto 36px;
-    }
-
-    .welcome-para {
-      font-family: 'Tiro Devanagari Sanskrit', serif;
-      font-size: 16px;
-      line-height: 1.95;
-      color: #5a6e5a;
-      font-weight: 400;
-    }
-
-    footer {
-      text-align: center;
-      padding: 28px 24px;
-      background: #1e3329;
-      border-top: 1px solid rgba(168,197,160,0.15);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .footer-main {
-      font-family: 'Tiro Devanagari Sanskrit', serif;
-      font-size: 13px;
-      color: #a8c5a0;
-      letter-spacing: 0.04em;
-    }
-
-    .footer-creator {
-      font-family: 'Tiro Devanagari Sanskrit', serif;
-      font-size: 12px;
-      color: #6a9a7a;
-      text-decoration: none;
-      letter-spacing: 0.04em;
-      transition: color 0.2s;
-    }
-
-    .footer-creator:hover { color: #a8c5a0; }
   </style>
 </head>
 <body>
@@ -211,6 +207,10 @@
         </svg>
       </div>
       <div class="family-name">Nisarani Family</div>
+      <div class="divider"></div>
+      <p class="poetic">From the household of Smt. Rukmini and Sri Venkabhatta, ten children carried their legacy into the world.<br/>Spread across cities and lives, each branch rooted in its own ground, yet none of us ever truly apart.<br/>When we meet, it feels like no time has passed — because in the ways that matter, it hasn't.</p>
+      <div class="divider"></div>
+      <p class="welcome-para">Welcome to this small window into our world — the Nisarani family. We take our name from Nisarani, a quiet village nestled in Sorabha taluk, Shivamogga district, in the heart of Karnataka. It is where our roots were planted, where our story began, and where the name we carry was born.</p>
     </div>
   </section>
 
@@ -218,16 +218,6 @@
     <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
     <img src="hero.jpeg" alt="Nisarani Family Home"/>
   </div>
-
-  <section class="welcome">
-    <div class="welcome-note">
-      <p>From the household of Smt. Rukmini and Sri Venkabhatta, ten children carried their legacy into the world.</p>
-      <p>Spread across cities and lives, each branch rooted in its own ground, yet none of us ever truly apart.</p>
-      <p>When we meet, it feels like no time has passed — because in the ways that matter, it hasn't.</p>
-    </div>
-    <div class="divider"></div>
-    <p class="welcome-para">Welcome to this small window into our world — the Nisarani family. We take our name from Nisarani, a quiet village nestled in Sorabha taluk, Shivamogga district, in the heart of Karnataka. It is where our roots were planted, where our story began, and where the name we carry was born.</p>
-  </section>
 
   <footer>
     <div class="footer-main">© 2025 The Nisarani Family &nbsp;|&nbsp; Made with Love</div>
