@@ -4,15 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>The Nisarani Family</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #1a1208;
-      color: #f0e6d0;
-      min-height: 100vh;
+      background-color: #f5f0e8;
+      color: #2d4a3e;
     }
 
     nav {
@@ -21,24 +20,24 @@
       display: flex;
       justify-content: center;
       gap: 40px;
-      padding: 18px 40px;
-      background: rgba(26, 18, 8, 0.85);
+      padding: 16px 40px;
+      background: rgba(30, 51, 41, 0.92);
       backdrop-filter: blur(8px);
       z-index: 100;
-      border-bottom: 1px solid rgba(200, 160, 80, 0.2);
+      border-bottom: 1px solid rgba(168, 197, 160, 0.2);
     }
 
     nav a {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: #c8a050;
+      color: #a8c5a0;
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    nav a:hover { color: #f0e6d0; }
+    nav a:hover { color: #f5f0e8; }
 
     .hero {
       min-height: 100vh;
@@ -50,6 +49,7 @@
       padding: 100px 24px 60px;
       position: relative;
       overflow: hidden;
+      cursor: pointer;
     }
 
     .hero-img {
@@ -57,95 +57,125 @@
       inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      opacity: 0.18;
-      filter: sepia(40%);
+      opacity: 0.35;
+      transition: opacity 0.3s;
     }
 
-    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+    .hero:hover .hero-img { opacity: 0.45; }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(30,51,41,0.5) 0%, rgba(30,51,41,0.3) 50%, rgba(30,51,41,0.6) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+
+    .flowers svg { display: block; margin: 0 auto 16px; }
 
     .family-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(56px, 10vw, 96px);
-      font-weight: 600;
-      color: #f0e6d0;
-      line-height: 1.05;
-      letter-spacing: 0.04em;
-    }
-
-    .family-name span {
-      display: block;
-      font-size: clamp(18px, 3vw, 26px);
-      font-weight: 400;
-      font-style: italic;
-      color: #c8a050;
-      letter-spacing: 0.12em;
-      margin-bottom: 12px;
-    }
-
-    .divider {
-      width: 60px;
-      height: 1px;
-      background: #c8a050;
-      margin: 28px auto;
-      opacity: 0.6;
+      font-family: 'Alex Brush', cursive;
+      font-size: clamp(64px, 11vw, 108px);
+      color: #f5f0e8;
+      line-height: 1;
     }
 
     .tagline {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(16px, 2.5vw, 20px);
-      font-style: italic;
-      color: #d4c4a0;
-      line-height: 1.7;
-      max-width: 520px;
-      margin: 0 auto 40px;
+      font-size: 13px;
+      font-weight: 300;
+      color: #a8c5a0;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-top: 12px;
+      margin-bottom: 32px;
     }
 
     .cta {
       display: inline-block;
-      padding: 12px 32px;
-      border: 1px solid #c8a050;
-      color: #c8a050;
-      font-size: 13px;
+      padding: 11px 30px;
+      border: 1px solid #a8c5a0;
+      color: #a8c5a0;
+      font-size: 11px;
       font-weight: 500;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       text-decoration: none;
       transition: background 0.2s, color 0.2s;
     }
 
     .cta:hover {
-      background: #c8a050;
-      color: #1a1208;
+      background: #a8c5a0;
+      color: #1e3329;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+
+    .lightbox.active { display: flex; }
+
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 24px; right: 32px;
+      color: #f5f0e8;
+      font-size: 32px;
+      cursor: pointer;
+      font-weight: 300;
+      line-height: 1;
     }
 
     .intro {
-      max-width: 720px;
+      max-width: 680px;
       margin: 0 auto;
       padding: 80px 24px;
       text-align: center;
     }
 
     .intro h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(28px, 4vw, 40px);
-      font-weight: 400;
-      color: #c8a050;
-      margin-bottom: 24px;
+      font-family: 'Alex Brush', cursive;
+      font-size: clamp(36px, 5vw, 52px);
+      color: #2d4a3e;
+      margin-bottom: 20px;
     }
 
     .intro p {
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.9;
-      color: #c8b890;
+      color: #5a6e5a;
       font-weight: 300;
+    }
+
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: #a8c5a0;
+      margin: 0 auto 28px;
     }
 
     footer {
       text-align: center;
-      padding: 32px 24px;
-      font-size: 13px;
-      color: #6b5a3a;
-      border-top: 1px solid rgba(200, 160, 80, 0.1);
+      padding: 28px 24px;
+      font-size: 12px;
+      color: #a8c5a0;
+      background: #1e3329;
+      letter-spacing: 0.06em;
     }
   </style>
 </head>
@@ -158,21 +188,44 @@
     <a href="#">Events</a>
   </nav>
 
-  <section class="hero">
-    <!-- Replace the src below with your family photo path when ready -->
-    <img class="hero-img" src="your-photo.jpg" alt="The Nisarani Family"/>
+  <section class="hero" onclick="openLightbox()">
+    <img class="hero-img" src="hero.jpeg" alt="Nisarani Family Home"/>
+    <div class="hero-overlay"></div>
     <div class="hero-content">
-      <div class="family-name">
-        <span>Welcome to</span>
-        Nisarani
+      <div class="flowers">
+        <svg width="220" height="26" viewBox="0 0 220 26">
+          <defs>
+            <radialGradient id="ctr" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fff9c4"/>
+              <stop offset="70%" stop-color="#ffe082"/>
+              <stop offset="100%" stop-color="#f9a825"/>
+            </radialGradient>
+          </defs>
+          <g transform="translate(11,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(33,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(55,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(77,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(99,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(121,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(143,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(165,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(187,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+          <g transform="translate(209,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
+        </svg>
       </div>
-      <div class="divider"></div>
-      <p class="tagline">One family, many homes, one heart. This is our story — where we came from, who we are, and the thread that binds us across every distance.</p>
+      <div class="family-name">Nisarani Family</div>
+      <div class="tagline">Rooted in the Western Ghats</div>
       <a class="cta" href="#">Explore Our Story</a>
     </div>
   </section>
 
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <img src="hero.jpeg" alt="Nisarani Family Home"/>
+  </div>
+
   <section class="intro">
+    <div class="divider"></div>
     <h2>Our Family</h2>
     <p>The Nisarani family spans generations and cities, yet our bonds have never loosened. This space is built for every member — young and old — to know their roots, recognise their people, and carry our story forward.</p>
   </section>
@@ -180,6 +233,15 @@
   <footer>
     &copy; 2025 The Nisarani Family &nbsp;|&nbsp; Built with love
   </footer>
+
+  <script>
+    function openLightbox() {
+      document.getElementById('lightbox').classList.add('active');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+  </script>
 
 </body>
 </html>
