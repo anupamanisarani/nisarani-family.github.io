@@ -1,0 +1,339 @@
+Ran a command
+bash
+
+cat << 'HTMLEOF' > /mnt/user-data/outputs/our-roots.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Roots — The Nisarani Family</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Tiro+Devanagari+Sanskrit:ital@0;1&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Tiro+Devanagari+Sanskrit:ital@0;1&display=swap" rel="stylesheet"/></noscript>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      color: #1e3329;
+    }
+
+    /* Fixed background image — faded, not clickable */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url('roots-bg.jpeg') center center / cover no-repeat;
+      opacity: 0.12;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Warm cream overlay so text is readable */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(245, 240, 232, 0.82);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 16px 40px;
+      background: rgba(30, 51, 41, 0.96);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(168, 197, 160, 0.2);
+    }
+
+    nav a {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 13px;
+      color: #a8c5a0;
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: #f5f0e8; }
+    nav a.active { color: #ffffff; font-weight: 500; }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 88px 24px 80px;
+    }
+
+    .section {
+      margin-bottom: 12px;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(30, 51, 41, 0.08);
+    }
+
+    /* Section header — warm amber tones */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 28px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.25s;
+    }
+
+    .section:nth-child(1) .section-header { background: #c8843c; border-left: 5px solid #a86028; }
+    .section:nth-child(2) .section-header { background: #d4b896; border-left: 5px solid #c8843c; }
+    .section:nth-child(3) .section-header { background: #c8843c; border-left: 5px solid #a86028; }
+
+    .section:nth-child(1) .section-header:hover { background: #b87430; }
+    .section:nth-child(2) .section-header:hover { background: #c8a07a; }
+    .section:nth-child(3) .section-header:hover { background: #b87430; }
+
+    /* Open state — deep forest green */
+    .section.open .section-header { background: #1e3329 !important; border-left-color: #c8843c !important; }
+    .section.open .section-header h2 { color: #f5f0e8; }
+    .section.open .section-icon { color: #c8843c; transform: rotate(45deg); }
+
+    .section-header h2 {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: clamp(17px, 2.2vw, 22px);
+      font-weight: 400;
+      color: #1e3329;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+
+    .section-icon {
+      font-size: 24px;
+      color: #1e3329;
+      transition: transform 0.3s ease, color 0.2s;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-left: 16px;
+      font-weight: 300;
+    }
+
+    .section-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+
+    .section.open .section-body { max-height: 9999px; }
+
+    /* Section body — alternating warm and cool */
+    .section:nth-child(odd) .section-inner { background: #fffdf5; }
+    .section:nth-child(even) .section-inner { background: #f0f7f0; }
+
+    .section-inner {
+      padding: 32px 28px 36px;
+      border-top: 2px solid #c8843c;
+    }
+
+    .section:nth-child(even) .section-inner { border-top-color: #4a7c6e; }
+
+    .section-inner p {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 15px;
+      line-height: 2;
+      color: #2d4a3e;
+      margin-bottom: 18px;
+    }
+
+    .section-inner p:last-child { margin-bottom: 0; }
+
+    .section-inner h3 {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: clamp(14px, 1.8vw, 18px);
+      color: #1e3329;
+      font-weight: 600;
+      margin: 28px 0 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #d4b896;
+      letter-spacing: 0.02em;
+    }
+
+    .section-inner ul {
+      list-style: none;
+      margin-bottom: 18px;
+    }
+
+    .section-inner ul li {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 15px;
+      line-height: 1.9;
+      color: #2d4a3e;
+      padding: 10px 0 10px 24px;
+      position: relative;
+      border-bottom: 1px solid rgba(200, 160, 80, 0.2);
+    }
+
+    .section-inner ul li:last-child { border-bottom: none; }
+
+    .section-inner ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 18px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #c8843c;
+    }
+
+    .section:nth-child(even) .section-inner ul li::before { background: #4a7c6e; }
+
+    .section-inner strong {
+      color: #1e3329;
+      font-weight: 600;
+    }
+
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: #c8843c;
+      margin: 20px 0;
+      opacity: 0.6;
+    }
+
+    .section:nth-child(even) .divider { background: #4a7c6e; }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 14px 24px;
+      background: #1e3329;
+      border-top: 1px solid rgba(168,197,160,0.15);
+    }
+
+    .footer-main {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 12px;
+      color: #a8c5a0;
+      letter-spacing: 0.04em;
+    }
+
+    .footer-creator {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 12px;
+      color: #a8c5a0;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+
+    .footer-creator:hover { color: #f5f0e8; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="our-roots.html" class="active">Our Roots</a>
+    <a href="#">Family Tree</a>
+    <a href="#">Events</a>
+    <a href="#">Birthdays</a>
+  </nav>
+
+  <div class="content">
+
+    <div class="section" id="s1">
+      <div class="section-header" onclick="toggle('s1')">
+        <h2>Hinduism</h2>
+        <span class="section-icon">+</span>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>Hinduism is one of the world's oldest living religions, with roots that stretch back more than four thousand years into the Indian subcontinent. Unlike many of the world's major religions, Hinduism has no single founder, no single sacred text, and no single moment of origin. It grew, organically and continuously, from the spiritual and philosophical traditions of ancient India — absorbing, evolving, and expanding across millennia.</p>
+          <p>At its heart, Hinduism is a way of life as much as it is a religion. It encompasses a vast range of beliefs, rituals, philosophies, and practices that vary widely across regions, communities, and families. Yet beneath this diversity lies a set of shared ideas that give Hinduism its coherence.</p>
+          <div class="divider"></div>
+          <h3>Core Beliefs</h3>
+          <ul>
+            <li><strong>Dharma</strong> — the principle of righteous living; the moral and cosmic order that governs all existence. Each person has their own dharma, shaped by their stage of life, their role in society, and their inner nature.</li>
+            <li><strong>Karma</strong> — the law of cause and effect. Every action, thought, and intention leaves an imprint that shapes one's future, in this life and beyond.</li>
+            <li><strong>Samsara</strong> — the cycle of birth, death, and rebirth. The soul, or atman, continues this cycle across many lifetimes until it attains liberation.</li>
+            <li><strong>Moksha</strong> — liberation from the cycle of samsara. It is the ultimate spiritual goal in Hinduism — the soul's reunion with the universal consciousness, known as Brahman.</li>
+            <li><strong>Brahman</strong> — the supreme, formless, infinite reality that underlies all of existence. Everything in the universe, animate and inanimate, is an expression of Brahman.</li>
+          </ul>
+          <p>Hinduism's sacred literature is among the richest in the world. The Vedas — four ancient collections of hymns, rituals, and philosophical thought — form its oldest and most authoritative texts. Alongside them are the Upanishads, which explore the nature of the self and the cosmos; the Mahabharata and Ramayana, two great epics that carry profound moral and spiritual teachings; and the Puranas, which preserve the stories of gods, sages, and the origin of the universe.</p>
+          <p>Hinduism also recognizes multiple paths to the divine. Jnana (the path of knowledge), Bhakti (the path of devotion), Karma (the path of righteous action), and Raja (the path of meditation) are all considered valid routes toward liberation, each suited to different temperaments and stages of life. What makes Hinduism remarkable is precisely this openness — an acknowledgment that the divine is too vast to be contained in any single doctrine, and that there are many ways for a human being to seek truth.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="s2">
+      <div class="section-header" onclick="toggle('s2')">
+        <h2>The Four Varnas</h2>
+        <span class="section-icon">+</span>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>Rooted in the understanding of dharma — the idea that each person has a role to play in the larger order of existence — ancient Hindu society developed a system to organize its people according to their nature, occupation, and duties. This system is known as the Varna classification, and it forms one of the earliest frameworks of social structure in human history.</p>
+          <p>The word varna itself means "colour" or "type" in Sanskrit, and it originally referred not to birth, but to one's qualities and calling. The Rigveda describes the four Varnas as emerging from the cosmic being Purusha — each representing a different aspect of the divine body, and by extension, a different function within society.</p>
+          <div class="divider"></div>
+          <h3>Brahmins — The Priestly and Scholarly Class</h3>
+          <p>Brahmins occupied the first position in the Varna order, not because of worldly power, but because of their responsibility toward knowledge and the sacred. They were the custodians of the Vedas, the performers of rituals, the teachers of philosophy, and the guides of spiritual life. Their lives were governed by strict codes of conduct — simplicity, learning, non-violence, and devotion.</p>
+          <h3>Kshatriyas — The Warrior and Ruling Class</h3>
+          <p>If the Brahmins were the mind of society, the Kshatriyas were its arms. They were the warriors, kings, and administrators — those entrusted with the protection of the land, the upholding of justice, and the governance of the people. Their dharma was courage, valor, and the willingness to sacrifice personal comfort for the welfare of those under their care. Many of Hinduism's most beloved figures — Rama, Krishna, and Arjuna — belonged to this Varna.</p>
+          <h3>Vaishyas — The Merchant and Agricultural Class</h3>
+          <p>The Vaishyas formed the economic backbone of ancient society. Farmers, traders, and craftspeople, they were responsible for the production and distribution of wealth. Their dharma was industry, honesty in commerce, and the sustenance of communities.</p>
+          <h3>Shudras — The Service Class</h3>
+          <p>The Shudras were those who served the other three Varnas, performing the labor and skilled trades that kept the everyday machinery of society running. In the original conception of the system, their role was as vital as any other — for no civilization can function without those who build, maintain, and serve.</p>
+          <p>The Varna system, at its philosophical best, envisioned a society where every role was sacred and interdependent. It is from within the first of these Varnas, the Brahmins, that our family's story begins to take shape.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="s3">
+      <div class="section-header" onclick="toggle('s3')">
+        <h2>The Brahmins</h2>
+        <span class="section-icon">+</span>
+      </div>
+      <div class="section-body">
+        <div class="section-inner">
+          <p>Of the four Varnas, the Brahmins carried perhaps the most layered identity. To be a Brahmin was not simply a matter of birth — it came with an entire world of obligation, scholarship, and discipline. The Brahmin community was never a monolith. Across the vast geography of the Indian subcontinent, Brahmins diverged significantly in the Vedic texts they studied, the gods they devoted themselves to, the rituals they performed, the food they ate, and even the names they carried.</p>
+          <div class="divider"></div>
+          <h3>Classification by Veda</h3>
+          <ul>
+            <li><strong>Rigvedic Brahmins</strong> follow the oldest of the four Vedas — a collection of over a thousand hymns composed in praise of the divine forces of nature. Found primarily along the western coast of India, particularly in regions like Konkan, Goa, and parts of Karnataka. Communities such as the Saraswats, Chitpavans, and Havyakas trace their Vedic roots here.</li>
+            <li><strong>Yajurvedic Brahmins</strong> follow the Yajurveda, a liturgical text — a manual of sacrificial rites and ritual procedures. Among the most widely distributed across India. Communities like the Iyers of Tamil Nadu, the Niyogis of Andhra Pradesh, and the Deshastha Brahmins of Maharashtra belong to this tradition.</li>
+            <li><strong>Samavedic Brahmins</strong> follow the Samaveda, which is essentially the Rigveda set to music — its verses are meant to be sung rather than merely recited. These Brahmins were traditionally the chanters of Vedic ceremonies.</li>
+            <li><strong>Atharvanic Brahmins</strong> follow the Atharvaveda, a text that contains hymns, incantations, and knowledge related to healing, protection, and the practical concerns of everyday life.</li>
+          </ul>
+          <div class="divider"></div>
+          <h3>Smartha Brahmins</h3>
+          <p>Smartha Brahmins derive their name from the Smritis — the body of remembered texts that govern dharmic life. Smarthas follow the Shanmata system established by the philosopher-saint Adi Shankaracharya in the 8th century CE, which recognized six deities — Shiva, Vishnu, Shakti, Ganesha, Surya, and Skanda — as equally valid manifestations of the one supreme Brahman. This made Smartha practice notably inclusive and philosophically non-sectarian.</p>
+          <h3>Vaishnava Brahmins</h3>
+          <p>Vaishnava Brahmins are those who made a definitive theological commitment — to Vishnu, or his avatars (most often Krishna or Rama), as the supreme personal God. This tradition drew heavily from the Bhakti movement, and its philosophy was shaped by great thinkers like Ramanujacharya, who propounded Vishishtadvaita (qualified non-dualism), and Madhvacharya, who propounded Dvaita (dualism).</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-main">© 2025 The Nisarani Family &nbsp;|&nbsp; Made with Love &nbsp;|&nbsp; <a href="#" class="footer-creator">Creator of the Website</a></div>
+  </footer>
+
+  <script>
+    function toggle(id) {
+      const section = document.getElementById(id);
+      section.classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>
