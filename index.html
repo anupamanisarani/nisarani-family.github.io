@@ -44,9 +44,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 80px 24px 60px;
+      justify-content: space-between;
+      padding: 80px 24px 80px;
       cursor: zoom-in;
     }
 
@@ -67,14 +66,14 @@
       background: rgba(20, 38, 28, 0.55);
     }
 
-    .hero-content {
+    .hero-title {
       position: relative;
       z-index: 1;
-      max-width: 680px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
+      margin: auto;
     }
 
     .flowers svg { display: block; }
@@ -84,6 +83,18 @@
       font-size: clamp(52px, 9vw, 96px);
       color: #f5f0e8;
       line-height: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-align: center;
+      padding-bottom: 10px;
     }
 
     .poetic {
@@ -106,7 +117,6 @@
       font-size: clamp(12px, 1.3vw, 14px);
       color: #c8dfc8;
       line-height: 1.85;
-      font-weight: 400;
     }
 
     footer {
@@ -116,10 +126,6 @@
       padding: 14px 24px;
       background: rgba(30, 51, 41, 0.92);
       border-top: 1px solid rgba(168,197,160,0.15);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 24px;
       z-index: 100;
     }
 
@@ -184,7 +190,8 @@
   <section class="hero" onclick="openLightbox()">
     <img class="hero-img" src="hero.jpeg" alt="Nisarani Family Home"/>
     <div class="hero-overlay"></div>
-    <div class="hero-content">
+
+    <div class="hero-title">
       <div class="flowers">
         <svg width="220" height="26" viewBox="0 0 220 26">
           <defs>
@@ -203,35 +210,4 @@
           <g transform="translate(143,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
           <g transform="translate(165,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
           <g transform="translate(187,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-          <g transform="translate(209,13)"><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(0)"   fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(72)"  fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(144)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(216)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><ellipse cx="0" cy="-6" rx="4" ry="6" transform="rotate(288)" fill="#fffdf5" stroke="#e0d8b0" stroke-width="0.4"/><circle cx="0" cy="0" r="2.8" fill="url(#ctr)"/></g>
-        </svg>
-      </div>
-      <div class="family-name">Nisarani Family</div>
-      <div class="divider"></div>
-      <p class="poetic">From the household of Smt. Rukmini and Sri Venkabhatta, ten children carried their legacy into the world.<br/>Spread across cities and lives, each branch rooted in its own ground, yet none of us ever truly apart.<br/>When we meet, it feels like no time has passed — because in the ways that matter, it hasn't.</p>
-      <div class="divider"></div>
-      <p class="welcome-para">Welcome to this small window into our world — the Nisarani family. We take our name from Nisarani, a quiet village nestled in Sorabha taluk, Shivamogga district, in the heart of Karnataka. It is where our roots were planted, where our story began, and where the name we carry was born.</p>
-    </div>
-  </section>
-
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-    <img src="hero.jpeg" alt="Nisarani Family Home"/>
-  </div>
-
-  <footer>
-    <div class="footer-main">© 2025 The Nisarani Family &nbsp;|&nbsp; Made with Love</div>
-    <a href="#" class="footer-creator">Creator of the Website</a>
-  </footer>
-
-  <script>
-    function openLightbox() {
-      document.getElementById('lightbox').classList.add('active');
-    }
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('active');
-    }
-  </script>
-
-</body>
-</html>
+          <g transform="translate(209,13)"><ellipse cx="0" cy="-6" rx="4"
