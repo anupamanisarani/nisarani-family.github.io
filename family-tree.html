@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Family Tree — The Nisarani Family</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Tiro+Devanagari+Sanskrit:ital@0;1&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Tiro+Devanagari+Sanskrit:ital@0;1&display=swap" rel="stylesheet"/></noscript>
+  <script src="https://balkan.app/FamilyTreeJS/FamilyTree.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      background: #f5f0e8;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 16px 40px;
+      background: rgba(30, 51, 41, 0.96);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(168, 197, 160, 0.2);
+    }
+
+    nav a {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 13px;
+      color: #a8c5a0;
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: #f5f0e8; }
+    nav a.active { color: #ffffff; font-weight: 500; }
+
+    #tree-container {
+      position: fixed;
+      top: 52px;
+      left: 0; right: 0; bottom: 40px;
+      background: #f5f0e8;
+    }
+
+    .zoom-controls {
+      position: fixed;
+      bottom: 56px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 99;
+    }
+
+    .zoom-btn {
+      width: 36px;
+      height: 36px;
+      background: #2d4a3e;
+      color: #f5f0e8;
+      border: none;
+      border-radius: 4px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .zoom-btn:hover { background: #1e3329; }
+
+    .zoom-reset { font-size: 11px; letter-spacing: 0.04em; }
+
+    footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      text-align: center;
+      padding: 10px 24px;
+      background: #1e3329;
+      border-top: 1px solid rgba(168,197,160,0.15);
+      z-index: 100;
+    }
+
+    .footer-main {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 12px;
+      color: #a8c5a0;
+      letter-spacing: 0.04em;
+    }
+
+    .footer-creator {
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 12px;
+      color: #a8c5a0;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+
+    .footer-creator:hover { color: #f5f0e8; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="our-roots.html">Our Roots</a>
+    <a href="family-tree.html" class="active">Family Tree</a>
+    <a href="#">Events</a>
+    <a href="#">Birthdays</a>
+  </nav>
+
+  <div id="tree-container"></div>
+
+  <div class="zoom-controls">
+    <button class="zoom-btn" onclick="zoomIn()">+</button>
+    <button class="zoom-btn zoom-reset" onclick="zoomReset()">fit</button>
+    <button class="zoom-btn" onclick="zoomOut()">−</button>
+  </div>
+
+  <footer>
+    <div class="footer-main">© 2025 The Nisarani Family &nbsp;|&nbsp; Made with Love &nbsp;|&nbsp; <a href="family-tree.html#anupama" class="footer-creator">Creator of the Website</a></div>
+  </footer>
+
+  <script>
+    var nodes = [
+      { id: 1,  pids: [2],   name: "Venkabhatta",      gender: "male"   },
+      { id: 2,  pids: [1],   name: "Rukmini",           gender: "female" },
+
+      { id: 3,  mid: 2, fid: 1, pids: [4],  name: "Ramachandra",     gender: "male"   },
+      { id: 4,  pids: [3],                  name: "Parvathi",         gender: "female" },
+      { id: 5,  mid: 2, fid: 1, pids: [6],  name: "Lakshminarayana", gender: "male"   },
+      { id: 6,  pids: [5],                  name: "Ambuja",           gender: "female" },
+      { id: 7,  mid: 2, fid: 1, pids: [8],  name: "Padmavathi",      gender: "female" },
+      { id: 8,  pids: [7],                  name: "Narayanappa",      gender: "male"   },
+      { id: 9,  mid: 2, fid: 1, pids: [10], name: "Parvathi (4th)",  gender: "female" },
+      { id: 10, pids: [9],                  name: "Venkatagiri",      gender: "male"   },
+      { id: 11, mid: 2, fid: 1, pids: [12], name: "Srinivasa",       gender: "male"   },
+      { id: 12, pids: [11],                 name: "Kamala",           gender: "female" },
+      { id: 13, mid: 2, fid: 1, pids: [14], name: "Govinda",         gender: "male"   },
+      { id: 14, pids: [13],                 name: "Rathna",           gender: "female" },
+      { id: 15, mid: 2, fid: 1, pids: [16], name: "Gopala",          gender: "male"   },
+      { id: 16, pids: [15],                 name: "Varamahalakshmi",  gender: "female" },
+      { id: 17, mid: 2, fid: 1, pids: [18], name: "Kamalakshi",      gender: "female" },
+      { id: 18, pids: [17],                 name: "Ramachandra (H)",  gender: "male"   },
+      { id: 19, mid: 2, fid: 1, pids: [20], name: "Prabhakara",      gender: "male"   },
+      { id: 20, pids: [19],                 name: "Kasturi",          gender: "female" },
+      { id: 21, mid: 2, fid: 1, pids: [22], name: "Sridhara",        gender: "male"   },
+      { id: 22, pids: [21],                 name: "Nagaveni",         gender: "female" },
+
+      // RAMACHANDRA children
+      { id: 23, mid: 4, fid: 3, pids: [24], name: "Venkatagiri (R)", gender: "male"   },
+      { id: 24, pids: [23],                 name: "Ramadevi",         gender: "female" },
+      { id: 25, mid: 4, fid: 3, pids: [26], name: "Narayanamurthy",  gender: "male"   },
+      { id: 26, pids: [25],                 name: "Krishnaveni",      gender: "female" },
+      { id: 27, mid: 4, fid: 3, pids: [67], name: "Shantha Kumari ⚭", gender: "female" },
+      { id: 28, mid: 4, fid: 3, pids: [29], name: "Raghavendra",     gender: "male"   },
+      { id: 29, pids: [28],                 name: "Nagratna",         gender: "female" },
+      { id: 30, mid: 4, fid: 3, pids: [95], name: "Sumangala ⚭",    gender: "female" },
+
+      // Venkatagiri (R) children
+      { id: 31, mid: 24, fid: 23, pids: [32], name: "Pavitra",   gender: "female" },
+      { id: 32, pids: [31],                   name: "Prashanth", gender: "male"   },
+      { id: 33, mid: 24, fid: 23, pids: [34], name: "Pavana",   gender: "female" },
+      { id: 34, pids: [33],                   name: "Kiran",     gender: "male"   },
+      { id: 35, mid: 31, fid: 32,             name: "Pranava",  gender: "male"   },
+      { id: 36, mid: 33, fid: 34,             name: "Adi Om",   gender: "male"   },
+
+      // Narayanamurthy children
+      { id: 37, mid: 26, fid: 25, pids: [38], name: "Manasa",       gender: "female" },
+      { id: 38, pids: [37],                   name: "Ananth",        gender: "male"   },
+      { id: 39, mid: 26, fid: 25, pids: [40], name: "Mythili",      gender: "female" },
+      { id: 40, pids: [39],                   name: "Renukaprasad",  gender: "male"   },
+      { id: 41, mid: 37, fid: 38,             name: "Aadhya",       gender: "female" },
+      { id: 42, mid: 39, fid: 40,             name: "Atharva",      gender: "male"   },
+
+      // Raghavendra's daughter
+      { id: 43, mid: 29, fid: 28, name: "Uma", gender: "female" },
+
+      // LAKSHMINARAYANA children
+      { id: 44, mid: 6, fid: 5,              name: "Paresh (spouse unknown)", gender: "male"   },
+      { id: 45, mid: 6, fid: 5, pids: [46],  name: "Indrakshi",   gender: "female" },
+      { id: 46, pids: [45],                  name: "Prakash",      gender: "male"   },
+      { id: 47, mid: 6, fid: 5, pids: [48],  name: "Savitha",     gender: "female" },
+      { id: 48, pids: [47],                  name: "Lakshmana",    gender: "male"   },
+      { id: 49, mid: 45, fid: 46, pids: [50], name: "Sanath Mihir", gender: "male" },
+      { id: 50, pids: [49],                   name: "Vasanthalakshmi", gender: "female" },
+      { id: 51, mid: 50, fid: 49,             name: "Child (unknown)", gender: "male" },
+
+      // PADMAVATHI children
+      { id: 52, mid: 7, fid: 8, pids: [53], name: "Rukmavathi",   gender: "female" },
+      { id: 53, pids: [52],                 name: "Krishnamurthy", gender: "male"   },
+      { id: 54, mid: 7, fid: 8, pids: [55], name: "Taarabai",     gender: "female" },
+      { id: 55, pids: [54],                 name: "Venkappa",      gender: "male"   },
+      { id: 67, mid: 7, fid: 8, pids: [27], name: "Manjappa ⚭",  gender: "male"   },
+      { id: 56, mid: 7, fid: 8, pids: [57], name: "Geetha",       gender: "female" },
+      { id: 57, pids: [56],                 name: "Prasad",        gender: "male"   },
+      { id: 58, mid: 7, fid: 8, pids: [59], name: "Gurumurthy",   gender: "male"   },
+      { id: 59, pids: [58],                 name: "Sharavathy",    gender: "female" },
+      { id: 60, mid: 7, fid: 8, pids: [61], name: "Nagaraj",      gender: "male"   },
+      { id: 61, pids: [60],                 name: "Sharada",       gender: "female" },
+      { id: 62, mid: 7, fid: 8, pids: [63], name: "Shailaja",     gender: "female" },
+      { id: 63, pids: [62],                 name: "Madhava Holla", gender: "male"   },
+      { id: 64, mid: 7, fid: 8, pids: [65], name: "Rekha",        gender: "female" },
+      { id: 65, pids: [64],                 name: "Purushotham",   gender: "male"   },
+
+      // Rukmavathi children
+      { id: 68, mid: 52, fid: 53, pids: [69], name: "Yashodha",     gender: "female" },
+      { id: 69, pids: [68],                   name: "Gopalakrishna", gender: "male"   },
+      { id: 70, mid: 52, fid: 53, pids: [71], name: "Venkatachala", gender: "male"   },
+      { id: 71, pids: [70],                   name: "Shanthala",     gender: "female" },
+      { id: 72, mid: 68, fid: 69, pids: [73], name: "Ajith",        gender: "male"   },
+      { id: 73, pids: [72],                   name: "Shruthi",       gender: "female" },
+      { id: 74, mid: 68, fid: 69, pids: [75], name: "Akshatha",     gender: "female" },
+      { id: 75, pids: [74],                   name: "Suresh (Y)",    gender: "male"   },
+      { id: 76, mid: 73, fid: 72,             name: "Daughter (unknown)", gender: "female" },
+      { id: 77, mid: 74, fid: 75,             name: "Child (unknown)",    gender: "male"   },
+      { id: 78, mid: 70, fid: 71, pids: [79], name: "Sindhu",       gender: "female" },
+      { id: 79, pids: [78],                   name: "Manjunatha",    gender: "male"   },
+      { id: 80, mid: 70, fid: 71,             name: "Sathvik (V)",   gender: "male"   },
+      { id: 81, mid: 78, fid: 79,             name: "Daughter (unknown)", gender: "female" },
+
+      // Taarabai children
+      { id: 82, mid: 54, fid: 55, pids: [83], name: "Suresh (T)", gender: "male"   },
+      { id: 83, pids: [82],                   name: "Vijaya",      gender: "female" },
+      { id: 84, mid: 54, fid: 55, pids: [85], name: "Srikanth",   gender: "male"   },
+      { id: 85, pids: [84],                   name: "Bharathi",    gender: "female" },
+      { id: 86, mid: 54, fid: 55, pids: [87], name: "Ashok",      gender: "male"   },
+      { id: 87, pids: [86],                   name: "Vidya (T)",   gender: "female" },
+      { id: 88, mid: 84, fid: 85,             name: "Sneha",      gender: "female" },
+      { id: 89, mid: 84, fid: 85,             name: "Smruthi",    gender: "female" },
+      { id: 90, mid: 86, fid: 87,             name: "Kavi",       gender: "male"   },
+      { id: 91, mid: 86, fid: 87,             name: "Kanthi",     gender: "female" },
+
+      // Manjappa & Shantha Kumari (cousin marriage)
+      { id: 92, mid: 27, fid: 67, pids: [93], name: "Navya",    gender: "female" },
+      { id: 93, pids: [92],                   name: "Abhijeet",  gender: "male"   },
+      { id: 94, mid: 92, fid: 93,             name: "Thejas",   gender: "male"   },
+
+      // Geetha children
+      { id: 96, mid: 56, fid: 57, pids: [97], name: "Goutham", gender: "male"   },
+      { id: 97, pids: [96],                   name: "Chethana", gender: "female" },
+      { id: 98, mid: 56, fid: 57, pids: [99], name: "Gourav",  gender: "male"   },
+      { id: 99, pids: [98],                   name: "Anusha",   gender: "female" },
+      { id: 100, mid: 98, fid: 99,            name: "Vakul",   gender: "male"   },
+
+      // Gurumurthy son
+      { id: 101, mid: 58, fid: 59, name: "Ramanath", gender: "male" },
+
+      // Nagaraj son
+      { id: 102, mid: 60, fid: 61, pids: [103], name: "Bhargav", gender: "male"   },
+      { id: 103, pids: [102],                   name: "Sandhya",  gender: "female" },
+
+      // Rekha daughter
+      { id: 104, mid: 64, fid: 65, pids: [105], name: "Kavya",     gender: "female" },
+      { id: 105, pids: [104],                   name: "Hariprasad", gender: "male"   },
+
+      // PARVATHI (4th) children
+      { id: 106, mid: 9, fid: 10, pids: [107], name: "Lakshminarayana (P)", gender: "male"   },
+      { id: 107, pids: [106],                  name: "Jayalakshmi",          gender: "female" },
+      { id: 108, mid: 9, fid: 10, pids: [109], name: "Anusuya",             gender: "female" },
+      { id: 109, pids: [108],                  name: "Lakshminarayana (H)",  gender: "male"   },
+      { id: 110, mid: 9, fid: 10, pids: [111], name: "Prabhavathi",         gender: "female" },
+      { id: 111, pids: [110],                  name: "Gopal",                gender: "male"   },
+      { id: 112, mid: 9, fid: 10, pids: [113], name: "Narahari",            gender: "male"   },
+      { id: 113, pids: [112],                  name: "Jaya",                 gender: "female" },
+      { id: 114, mid: 106, fid: 107,           name: "Aparna (spouse unknown)", gender: "female" },
+      { id: 115, mid: 106, fid: 107,           name: "Pooja (spouse unknown)",  gender: "female" },
+      { id: 116, mid: 106, fid: 107, pids: [117], name: "Raghavendra (P)", gender: "male"   },
+      { id: 117, pids: [116],                     name: "Seema",            gender: "female" },
+      { id: 118, mid: 108, fid: 109, pids: [119], name: "Suresh (A)",      gender: "male"   },
+      { id: 119, pids: [118],                     name: "Vishalakshi",      gender: "female" },
+      { id: 120, mid: 108, fid: 109,              name: "Sathish (A) (spouse unknown)", gender: "male" },
+      { id: 121, mid: 108, fid: 109,              name: "Subhash (spouse unknown)",     gender: "male" },
+      { id: 122, mid: 112, fid: 113,              name: "Bharath (spouse unknown)",     gender: "male" },
+      { id: 123, mid: 112, fid: 113,              name: "Sharath (spouse unknown)",     gender: "male" },
+
+      // SRINIVASA children
+      { id: 124, mid: 11, fid: 12, pids: [125], name: "Kusuma",           gender: "female" },
+      { id: 125, pids: [124],                   name: "Rudrappa RC Patil", gender: "male"   },
+      { id: 126, mid: 11, fid: 12, pids: [127], name: "Sathish (S)",      gender: "male"   },
+      { id: 127, pids: [126],                   name: "Veena",             gender: "female" },
+      { id: 128, mid: 124, fid: 125, pids: [129], name: "Mallanagowda ★ (stepson)", gender: "male" },
+      { id: 129, pids: [128],                     name: "Kavitha",                   gender: "female" },
+      { id: 130, mid: 128, fid: 129,              name: "Maheshwari", gender: "female" },
+      { id: 131, mid: 128, fid: 129,              name: "Anushree",   gender: "female" },
+      { id: 132, mid: 126, fid: 127, pids: [133], name: "Sandhya (S)", gender: "female" },
+      { id: 133, pids: [132],                     name: "Prashanth",   gender: "male"   },
+      { id: 134, mid: 126, fid: 127,              name: "Bhagya †",    gender: "female" },
+      { id: 135, mid: 132, fid: 133,              name: "Arya",        gender: "male"   },
+
+      // GOVINDA children
+      { id: 136, mid: 13, fid: 14, pids: [137], name: "Kalpana",    gender: "female" },
+      { id: 137, pids: [136],                   name: "Raviprakash", gender: "male"   },
+      { id: 138, mid: 13, fid: 14, pids: [139], name: "Kanchana",   gender: "female" },
+      { id: 139, pids: [138],                   name: "Vijayakumar", gender: "male"   },
+      { id: 140, mid: 13, fid: 14, pids: [141], name: "Mahesh",     gender: "male"   },
+      { id: 141, pids: [140],                   name: "Uma (G)",     gender: "female" },
+      { id: 142, mid: 136, fid: 137,            name: "Skanda",     gender: "male"   },
+      { id: 143, mid: 138, fid: 139,            name: "Dhanvi",     gender: "female" },
+      { id: 144, mid: 140, fid: 141,            name: "Sathvik (G)", gender: "male"  },
+
+      // GOPALA children
+      { id: 145, mid: 15, fid: 16, pids: [146], name: "Sumitra",            gender: "female" },
+      { id: 146, pids: [145],                   name: "Krishnamurthy (G)",   gender: "male"   },
+      { id: 147, mid: 15, fid: 16, pids: [148], name: "Ravindra",           gender: "male"   },
+      { id: 148, pids: [147],                   name: "Vani",                gender: "female" },
+      { id: 149, mid: 145, fid: 146,            name: "Aarathi (spouse unknown)",  gender: "female" },
+      { id: 150, mid: 145, fid: 146,            name: "Ambika (spouse unknown)",   gender: "female" },
+      { id: 151, mid: 145, fid: 146,            name: "Thimmappa (spouse unknown)", gender: "male"  },
+      { id: 152, mid: 147, fid: 148,            name: "Souparnika (spouse unknown)", gender: "female" },
+
+      // KAMALAKSHI children
+      { id: 153, mid: 17, fid: 18, pids: [154], name: "Rohini",      gender: "female" },
+      { id: 154, pids: [153],                   name: "Prakash (K)", gender: "male"   },
+      { id: 95,  mid: 17, fid: 18, pids: [30],  name: "Muralidhara ⚭", gender: "male" },
+      { id: 155, mid: 153, fid: 154, pids: [156], name: "Varsha",  gender: "female" },
+      { id: 156, pids: [155],                     name: "Nikhil",   gender: "male"   },
+      { id: 157, mid: 30,  fid: 95,              name: "Sandesh",  gender: "male"   },
+      { id: 158, mid: 155, fid: 156,             name: "Yatharva", gender: "male"   },
+      { id: 159, mid: 155, fid: 156,             name: "Ishitha",  gender: "female" },
+
+      // PRABHAKARA children
+      { id: 160, mid: 19, fid: 20, pids: [161], name: "Naveen",        gender: "male"   },
+      { id: 161, pids: [160],                   name: "Shwetha",        gender: "female" },
+      { id: 162, mid: 19, fid: 20, pids: [163], name: "Chethana (P)",  gender: "female" },
+      { id: 163, pids: [162],                   name: "Charan",         gender: "male"   },
+      { id: 164, mid: 160, fid: 161,            name: "Abhinav",       gender: "male"   },
+      { id: 165, mid: 162, fid: 163,            name: "Adithi",        gender: "female" },
+
+      // SRIDHARA children
+      { id: 166, mid: 21, fid: 22, pids: [167], name: "Vikram",   gender: "male"   },
+      { id: 167, pids: [166],                   name: "Vidya",     gender: "female" },
+      { id: 168, mid: 166, fid: 167,            name: "Anupama ✦", gender: "female" }
+    ];
+
+    var family = new FamilyTree(document.getElementById("tree-container"), {
+      mode: "light",
+      scaleInitial: FamilyTree.match.boundary,
+      enableSearch: false,
+      mouseScrool: FamilyTree.action.zoom,
+      nodeBinding: { field_0: "name" },
+      nodes: nodes,
+      roots: [1],
+      orientation: FamilyTree.orientation.top,
+      toolbar: { layout: false, zoom: false, fit: false, expandAll: false }
+    });
+
+    function zoomIn()    { family.zoom(true);  }
+    function zoomOut()   { family.zoom(false); }
+    function zoomReset() { family.fit();       }
+  </script>
+
+</body>
+</html>
