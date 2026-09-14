@@ -1,7 +1,3 @@
-Ran a command
-bash
-
-cat << 'HTMLEOF' > /mnt/user-data/outputs/our-roots.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +17,6 @@ cat << 'HTMLEOF' > /mnt/user-data/outputs/our-roots.html
       color: #1e3329;
     }
 
-    /* Fixed background image — faded, not clickable */
     body::before {
       content: '';
       position: fixed;
@@ -32,7 +27,6 @@ cat << 'HTMLEOF' > /mnt/user-data/outputs/our-roots.html
       pointer-events: none;
     }
 
-    /* Warm cream overlay so text is readable */
     body::after {
       content: '';
       position: fixed;
@@ -82,7 +76,6 @@ cat << 'HTMLEOF' > /mnt/user-data/outputs/our-roots.html
       box-shadow: 0 2px 12px rgba(30, 51, 41, 0.08);
     }
 
-    /* Section header — warm amber tones */
     .section-header {
       display: flex;
       justify-content: space-between;
@@ -101,7 +94,6 @@ cat << 'HTMLEOF' > /mnt/user-data/outputs/our-roots.html
     .section:nth-child(2) .section-header:hover { background: #c8a07a; }
     .section:nth-child(3) .section-header:hover { background: #b87430; }
 
-    /* Open state — deep forest green */
     .section.open .section-header { background: #1e3329 !important; border-left-color: #c8843c !important; }
     .section.open .section-header h2 { color: #f5f0e8; }
     .section.open .section-icon { color: #c8843c; transform: rotate(45deg); }
@@ -133,7 +125,6 @@ cat << 'HTMLEOF' > /mnt/user-data/outputs/our-roots.html
 
     .section.open .section-body { max-height: 9999px; }
 
-    /* Section body — alternating warm and cool */
     .section:nth-child(odd) .section-inner { background: #fffdf5; }
     .section:nth-child(even) .section-inner { background: #f0f7f0; }
 
@@ -243,7 +234,7 @@ cat << 'HTMLEOF' > /mnt/user-data/outputs/our-roots.html
   <nav>
     <a href="index.html">Home</a>
     <a href="our-roots.html" class="active">Our Roots</a>
-    <a href="#">Family Tree</a>
+    <a href="family-tree.html">Family Tree</a>
     <a href="#">Events</a>
     <a href="#">Birthdays</a>
   </nav>
@@ -325,7 +316,7 @@ cat << 'HTMLEOF' > /mnt/user-data/outputs/our-roots.html
   </div>
 
   <footer>
-    <div class="footer-main">© 2025 The Nisarani Family &nbsp;|&nbsp; Made with Love &nbsp;|&nbsp; <a href="#" class="footer-creator">Creator of the Website</a></div>
+    <div class="footer-main">© 2025 The Nisarani Family &nbsp;|&nbsp; Made with Love &nbsp;|&nbsp; <a href="family-tree.html#anupama" class="footer-creator">Creator of the Website</a></div>
   </footer>
 
   <script>
