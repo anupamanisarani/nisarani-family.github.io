@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Tiro+Devanagari+Sanskrit:ital@0;1&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
   <noscript><link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Tiro+Devanagari+Sanskrit:ital@0;1&display=swap" rel="stylesheet"/></noscript>
-  <script src="https://balkan.app/FamilyTreeJS/FamilyTree.js"></script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -44,31 +43,69 @@
     nav a:hover { color: #f5f0e8; }
     nav a.active { color: #ffffff; font-weight: 500; }
 
-    #tree-container {
+    #tree-wrap {
       position: fixed;
-      top: 52px;
-      left: 0; right: 0; bottom: 40px;
-      background: #f5f0e8;
+      top: 52px; bottom: 40px;
+      left: 0; right: 0;
+      overflow: auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 24px;
     }
 
+    #tree-canvas {
+      position: relative;
+      transform-origin: top center;
+    }
+
+    /* Legend */
+    .legend {
+      position: fixed;
+      top: 68px;
+      left: 16px;
+      background: rgba(245,240,232,0.95);
+      border: 1px solid #d4b896;
+      border-radius: 6px;
+      padding: 10px 14px;
+      z-index: 99;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #2d4a3e;
+    }
+
+    .legend-dot {
+      width: 14px; height: 14px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* Zoom controls */
     .zoom-controls {
       position: fixed;
       bottom: 56px;
-      right: 24px;
+      right: 16px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       z-index: 99;
     }
 
     .zoom-btn {
-      width: 36px;
-      height: 36px;
+      width: 34px; height: 34px;
       background: #2d4a3e;
       color: #f5f0e8;
       border: none;
       border-radius: 4px;
-      font-size: 20px;
+      font-size: 18px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -77,8 +114,7 @@
     }
 
     .zoom-btn:hover { background: #1e3329; }
-
-    .zoom-reset { font-size: 11px; letter-spacing: 0.04em; }
+    .zoom-fit { font-size: 10px; letter-spacing: 0.04em; }
 
     footer {
       position: fixed;
@@ -102,11 +138,64 @@
       font-size: 12px;
       color: #a8c5a0;
       text-decoration: none;
-      letter-spacing: 0.04em;
       transition: color 0.2s;
     }
 
     .footer-creator:hover { color: #f5f0e8; }
+
+    /* Tree nodes */
+    .node {
+      position: absolute;
+      width: 130px;
+      padding: 8px 10px;
+      border-radius: 5px;
+      text-align: center;
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 12px;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s;
+      border-width: 2px;
+      border-style: solid;
+      z-index: 2;
+      user-select: none;
+    }
+
+    .node:hover { box-shadow: 0 4px 14px rgba(30,51,41,0.18); transform: translateY(-1px); }
+
+    .node.founder    { background: #fff3e0; border-color: #c8843c; }
+    .node.son        { background: #e8f4f0; border-color: #4a7c6e; }
+    .node.daughter   { background: #f0f7ee; border-color: #a8c5a0; }
+    .node.son-in-law { background: #fdf6ee; border-color: #d4b896; }
+    .node.dau-in-law { background: #eef4f0; border-color: #2d4a3e; }
+    .node.unknown    { background: #f5f0e8; border-color: #c8c0b0; border-style: dashed; }
+    .node.deceased   { background: #f0ece8; border-color: #a09080; opacity: 0.75; }
+    .node.creator    { background: #fff3e0; border-color: #c8843c; box-shadow: 0 0 0 3px rgba(200,132,60,0.25); }
+    .node.cousin-marker { font-size: 10px; }
+
+    .node-name { font-weight: 500; color: #1e3329; }
+    .node-tag  { font-size: 10px; color: #4a7c6e; margin-top: 2px; }
+
+    /* Connector lines via SVG overlay */
+    #lines-svg {
+      position: absolute;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: visible;
+    }
+
+    line, path {
+      stroke: #a8c5a0;
+      stroke-width: 1.5;
+      fill: none;
+    }
+
+    line.cousin-link {
+      stroke: #c8843c;
+      stroke-width: 1.5;
+      stroke-dasharray: 4 3;
+    }
   </style>
 </head>
 <body>
@@ -119,245 +208,501 @@
     <a href="#">Birthdays</a>
   </nav>
 
-  <div id="tree-container"></div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#fff3e0;border:2px solid #c8843c"></div> Founders</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e8f4f0;border:2px solid #4a7c6e"></div> Sons</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f0f7ee;border:2px solid #a8c5a0"></div> Daughters</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#fdf6ee;border:2px solid #d4b896"></div> Sons-in-law</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#eef4f0;border:2px solid #2d4a3e"></div> Daughters-in-law</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f5f0e8;border:2px dashed #c8c0b0"></div> Unknown</div>
+    <div class="legend-item" style="color:#c8843c">⚭ Cousin marriage</div>
+    <div class="legend-item" style="color:#a09080">† Deceased</div>
+    <div class="legend-item" style="color:#c8843c">✦ Website creator</div>
+  </div>
+
+  <div id="tree-wrap">
+    <div id="tree-canvas">
+      <svg id="lines-svg"></svg>
+    </div>
+  </div>
 
   <div class="zoom-controls">
     <button class="zoom-btn" onclick="zoomIn()">+</button>
-    <button class="zoom-btn zoom-reset" onclick="zoomReset()">fit</button>
+    <button class="zoom-btn zoom-fit" onclick="zoomFit()">fit</button>
     <button class="zoom-btn" onclick="zoomOut()">−</button>
   </div>
 
   <footer>
-    <div class="footer-main">© 2025 The Nisarani Family &nbsp;|&nbsp; Made with Love &nbsp;|&nbsp; <a href="family-tree.html#anupama" class="footer-creator">Creator of the Website</a></div>
+    <div class="footer-main">© 2025 The Nisarani Family &nbsp;|&nbsp; Made with Love &nbsp;|&nbsp; <a href="family-tree.html#creator" class="footer-creator">Creator of the Website</a></div>
   </footer>
 
   <script>
-    var nodes = [
-      { id: 1,  pids: [2],   name: "Venkabhatta",      gender: "male"   },
-      { id: 2,  pids: [1],   name: "Rukmini",           gender: "female" },
+  // ── COLOUR HELPERS ──────────────────────────────────────────────────────────
+  const C = {
+    founder:    'founder',
+    son:        'son',
+    daughter:   'daughter',
+    sil:        'son-in-law',
+    dil:        'dau-in-law',
+    unknown:    'unknown',
+    deceased:   'deceased',
+    creator:    'creator'
+  };
 
-      { id: 3,  mid: 2, fid: 1, pids: [4],  name: "Ramachandra",     gender: "male"   },
-      { id: 4,  pids: [3],                  name: "Parvathi",         gender: "female" },
-      { id: 5,  mid: 2, fid: 1, pids: [6],  name: "Lakshminarayana", gender: "male"   },
-      { id: 6,  pids: [5],                  name: "Ambuja",           gender: "female" },
-      { id: 7,  mid: 2, fid: 1, pids: [8],  name: "Padmavathi",      gender: "female" },
-      { id: 8,  pids: [7],                  name: "Narayanappa",      gender: "male"   },
-      { id: 9,  mid: 2, fid: 1, pids: [10], name: "Parvathi (4th)",  gender: "female" },
-      { id: 10, pids: [9],                  name: "Venkatagiri",      gender: "male"   },
-      { id: 11, mid: 2, fid: 1, pids: [12], name: "Srinivasa",       gender: "male"   },
-      { id: 12, pids: [11],                 name: "Kamala",           gender: "female" },
-      { id: 13, mid: 2, fid: 1, pids: [14], name: "Govinda",         gender: "male"   },
-      { id: 14, pids: [13],                 name: "Rathna",           gender: "female" },
-      { id: 15, mid: 2, fid: 1, pids: [16], name: "Gopala",          gender: "male"   },
-      { id: 16, pids: [15],                 name: "Varamahalakshmi",  gender: "female" },
-      { id: 17, mid: 2, fid: 1, pids: [18], name: "Kamalakshi",      gender: "female" },
-      { id: 18, pids: [17],                 name: "Ramachandra (H)",  gender: "male"   },
-      { id: 19, mid: 2, fid: 1, pids: [20], name: "Prabhakara",      gender: "male"   },
-      { id: 20, pids: [19],                 name: "Kasturi",          gender: "female" },
-      { id: 21, mid: 2, fid: 1, pids: [22], name: "Sridhara",        gender: "male"   },
-      { id: 22, pids: [21],                 name: "Nagaveni",         gender: "female" },
+  // ── NODE WIDTH / HEIGHT ─────────────────────────────────────────────────────
+  const NW = 130, NH = 50, GAP_X = 20, GAP_Y = 80;
 
-      // RAMACHANDRA children
-      { id: 23, mid: 4, fid: 3, pids: [24], name: "Venkatagiri (R)", gender: "male"   },
-      { id: 24, pids: [23],                 name: "Ramadevi",         gender: "female" },
-      { id: 25, mid: 4, fid: 3, pids: [26], name: "Narayanamurthy",  gender: "male"   },
-      { id: 26, pids: [25],                 name: "Krishnaveni",      gender: "female" },
-      { id: 27, mid: 4, fid: 3, pids: [67], name: "Shantha Kumari ⚭", gender: "female" },
-      { id: 28, mid: 4, fid: 3, pids: [29], name: "Raghavendra",     gender: "male"   },
-      { id: 29, pids: [28],                 name: "Nagratna",         gender: "female" },
-      { id: 30, mid: 4, fid: 3, pids: [95], name: "Sumangala ⚭",    gender: "female" },
+  // ── TREE DATA ───────────────────────────────────────────────────────────────
+  // Each person: { id, name, cls, tag?, children:[] }
+  // Couples rendered side by side; children rendered below
+  // Cousin marriages marked with cousinOf:[id] — a dashed line is drawn
 
-      // Venkatagiri (R) children
-      { id: 31, mid: 24, fid: 23, pids: [32], name: "Pavitra",   gender: "female" },
-      { id: 32, pids: [31],                   name: "Prashanth", gender: "male"   },
-      { id: 33, mid: 24, fid: 23, pids: [34], name: "Pavana",   gender: "female" },
-      { id: 34, pids: [33],                   name: "Kiran",     gender: "male"   },
-      { id: 35, mid: 31, fid: 32,             name: "Pranava",  gender: "male"   },
-      { id: 36, mid: 33, fid: 34,             name: "Adi Om",   gender: "male"   },
+  const tree = {
+    id: 'vr', name: 'Venkabhatta', cls: C.founder,
+    spouse: { id: 'ru', name: 'Rukmini', cls: C.founder },
+    children: [
+      // ── 1. RAMACHANDRA ──────────────────────────────────────────────────────
+      {
+        id: 'rc', name: 'Ramachandra', cls: C.son,
+        spouse: { id: 'rc_w', name: 'Parvathi', cls: C.dil },
+        children: [
+          {
+            id: 'vg_r', name: 'Venkatagiri (R)', cls: C.son,
+            spouse: { id: 'rd', name: 'Ramadevi', cls: C.dil },
+            children: [
+              { id: 'pvt', name: 'Pavitra', cls: C.daughter, spouse: { id: 'prs', name: 'Prashanth', cls: C.sil }, children: [{ id: 'prn', name: 'Pranava', cls: C.son }] },
+              { id: 'pvn', name: 'Pavana', cls: C.daughter, spouse: { id: 'kir', name: 'Kiran', cls: C.sil }, children: [{ id: 'aom', name: 'Adi Om', cls: C.son }] }
+            ]
+          },
+          {
+            id: 'nm', name: 'Narayanamurthy', cls: C.son,
+            spouse: { id: 'kv', name: 'Krishnaveni', cls: C.dil },
+            children: [
+              { id: 'mns', name: 'Manasa', cls: C.daughter, spouse: { id: 'ant', name: 'Ananth', cls: C.sil }, children: [{ id: 'aad', name: 'Aadhya', cls: C.daughter }] },
+              { id: 'myt', name: 'Mythili', cls: C.daughter, spouse: { id: 'rp', name: 'Renukaprasad', cls: C.sil }, children: [{ id: 'ath', name: 'Atharva', cls: C.son }] }
+            ]
+          },
+          {
+            id: 'sk', name: 'Shantha Kumari ⚭', cls: C.daughter,
+            cousinSpouseId: 'mj',
+            children: [
+              { id: 'nvy', name: 'Navya', cls: C.daughter, spouse: { id: 'abj', name: 'Abhijeet', cls: C.sil }, children: [{ id: 'thj', name: 'Thejas', cls: C.son }] }
+            ]
+          },
+          {
+            id: 'rgh', name: 'Raghavendra', cls: C.son,
+            spouse: { id: 'ngr', name: 'Nagratna', cls: C.dil },
+            children: [{ id: 'uma_r', name: 'Uma', cls: C.daughter }]
+          },
+          {
+            id: 'smg', name: 'Sumangala ⚭', cls: C.daughter,
+            cousinSpouseId: 'mrd',
+            children: [{ id: 'snd', name: 'Sandesh', cls: C.son }]
+          }
+        ]
+      },
+      // ── 2. LAKSHMINARAYANA ──────────────────────────────────────────────────
+      {
+        id: 'ln', name: 'Lakshminarayana', cls: C.son,
+        spouse: { id: 'amb', name: 'Ambuja', cls: C.dil },
+        children: [
+          { id: 'par', name: 'Paresh', cls: C.son, tag: 'spouse unknown' },
+          {
+            id: 'ind', name: 'Indrakshi', cls: C.daughter,
+            spouse: { id: 'prk', name: 'Prakash', cls: C.sil },
+            children: [
+              { id: 'sm', name: 'Sanath Mihir', cls: C.son, spouse: { id: 'vsl', name: 'Vasanthalakshmi', cls: C.dil }, children: [{ id: 'unk1', name: 'Child (unknown)', cls: C.unknown }] }
+            ]
+          },
+          { id: 'sav', name: 'Savitha', cls: C.daughter, spouse: { id: 'lkm', name: 'Lakshmana', cls: C.sil }, children: [] }
+        ]
+      },
+      // ── 3. PADMAVATHI ───────────────────────────────────────────────────────
+      {
+        id: 'pdm', name: 'Padmavathi', cls: C.daughter,
+        spouse: { id: 'nrp', name: 'Narayanappa', cls: C.sil },
+        children: [
+          {
+            id: 'rkm', name: 'Rukmavathi', cls: C.daughter,
+            spouse: { id: 'krm', name: 'Krishnamurthy', cls: C.sil },
+            children: [
+              {
+                id: 'ysh', name: 'Yashodha', cls: C.daughter,
+                spouse: { id: 'gpk', name: 'Gopalakrishna', cls: C.sil },
+                children: [
+                  { id: 'ajt', name: 'Ajith', cls: C.son, spouse: { id: 'shr', name: 'Shruthi', cls: C.dil }, children: [{ id: 'dunk1', name: 'Daughter (unknown)', cls: C.unknown }] },
+                  { id: 'aksh', name: 'Akshatha', cls: C.daughter, spouse: { id: 'sur_y', name: 'Suresh (Y)', cls: C.sil }, children: [{ id: 'cunk1', name: 'Child (unknown)', cls: C.unknown }] }
+                ]
+              },
+              {
+                id: 'vtc', name: 'Venkatachala', cls: C.son,
+                spouse: { id: 'shnl', name: 'Shanthala', cls: C.dil },
+                children: [
+                  { id: 'snd_v', name: 'Sindhu', cls: C.daughter, spouse: { id: 'mjn', name: 'Manjunatha', cls: C.sil }, children: [{ id: 'dunk2', name: 'Daughter (unknown)', cls: C.unknown }] },
+                  { id: 'stv_v', name: 'Sathvik (V)', cls: C.son }
+                ]
+              }
+            ]
+          },
+          {
+            id: 'trb', name: 'Taarabai', cls: C.daughter,
+            spouse: { id: 'vkp', name: 'Venkappa', cls: C.sil },
+            children: [
+              { id: 'sur_t', name: 'Suresh (T)', cls: C.son, spouse: { id: 'vij', name: 'Vijaya', cls: C.dil }, children: [] },
+              { id: 'srk', name: 'Srikanth', cls: C.son, spouse: { id: 'bhr', name: 'Bharathi', cls: C.dil }, children: [{ id: 'snh', name: 'Sneha', cls: C.daughter }, { id: 'smr', name: 'Smruthi', cls: C.daughter }] },
+              { id: 'ash', name: 'Ashok', cls: C.son, spouse: { id: 'vid_t', name: 'Vidya (T)', cls: C.dil }, children: [{ id: 'kav', name: 'Kavi', cls: C.son }, { id: 'knt', name: 'Kanthi', cls: C.daughter }] }
+            ]
+          },
+          {
+            id: 'mj', name: 'Manjappa ⚭', cls: C.son,
+            cousinSpouseId: 'sk',
+            children: []
+          },
+          {
+            id: 'gth', name: 'Geetha', cls: C.daughter,
+            spouse: { id: 'prs_g', name: 'Prasad', cls: C.sil },
+            children: [
+              { id: 'gtm', name: 'Goutham', cls: C.son, spouse: { id: 'chet', name: 'Chethana', cls: C.dil }, children: [] },
+              { id: 'grv', name: 'Gourav', cls: C.son, spouse: { id: 'anu', name: 'Anusha', cls: C.dil }, children: [{ id: 'vkl', name: 'Vakul', cls: C.son }] }
+            ]
+          },
+          {
+            id: 'grm', name: 'Gurumurthy', cls: C.son,
+            spouse: { id: 'srv', name: 'Sharavathy', cls: C.dil },
+            children: [{ id: 'rmn', name: 'Ramanath', cls: C.son }]
+          },
+          {
+            id: 'ngr_p', name: 'Nagaraj', cls: C.son,
+            spouse: { id: 'shrd', name: 'Sharada', cls: C.dil },
+            children: [{ id: 'bhrg', name: 'Bhargav', cls: C.son, spouse: { id: 'sndh', name: 'Sandhya', cls: C.dil }, children: [] }]
+          },
+          { id: 'shlj', name: 'Shailaja', cls: C.daughter, spouse: { id: 'mdh', name: 'Madhava Holla', cls: C.sil }, children: [] },
+          {
+            id: 'rkh', name: 'Rekha', cls: C.daughter,
+            spouse: { id: 'prs_r', name: 'Purushotham', cls: C.sil },
+            children: [{ id: 'kvy', name: 'Kavya', cls: C.daughter, spouse: { id: 'hrp', name: 'Hariprasad', cls: C.sil }, children: [] }]
+          }
+        ]
+      },
+      // ── 4. PARVATHI (4th) ───────────────────────────────────────────────────
+      {
+        id: 'prv4', name: 'Parvathi (4th)', cls: C.daughter,
+        spouse: { id: 'vg4', name: 'Venkatagiri', cls: C.sil },
+        children: [
+          {
+            id: 'ln_p', name: 'Lakshminarayana (P)', cls: C.son,
+            spouse: { id: 'jyl', name: 'Jayalakshmi', cls: C.dil },
+            children: [
+              { id: 'apr', name: 'Aparna', cls: C.daughter, tag: 'spouse unknown' },
+              { id: 'poj', name: 'Pooja', cls: C.daughter, tag: 'spouse unknown' },
+              { id: 'rgh_p', name: 'Raghavendra (P)', cls: C.son, spouse: { id: 'sem', name: 'Seema', cls: C.dil }, children: [] }
+            ]
+          },
+          {
+            id: 'ans', name: 'Anusuya', cls: C.daughter,
+            spouse: { id: 'ln_h', name: 'Lakshminarayana (H)', cls: C.sil },
+            children: [
+              { id: 'sur_a', name: 'Suresh (A)', cls: C.son, spouse: { id: 'vsh', name: 'Vishalakshi', cls: C.dil }, children: [] },
+              { id: 'sth_a', name: 'Sathish (A)', cls: C.son, tag: 'spouse unknown' },
+              { id: 'sub', name: 'Subhash', cls: C.son, tag: 'spouse unknown' }
+            ]
+          },
+          { id: 'prb', name: 'Prabhavathi', cls: C.daughter, spouse: { id: 'gpl', name: 'Gopal', cls: C.sil }, children: [] },
+          {
+            id: 'nrh', name: 'Narahari', cls: C.son,
+            spouse: { id: 'jya', name: 'Jaya', cls: C.dil },
+            children: [
+              { id: 'bhr_n', name: 'Bharath', cls: C.son, tag: 'spouse unknown' },
+              { id: 'shr_n', name: 'Sharath', cls: C.son, tag: 'spouse unknown' }
+            ]
+          }
+        ]
+      },
+      // ── 5. SRINIVASA ────────────────────────────────────────────────────────
+      {
+        id: 'srv_s', name: 'Srinivasa', cls: C.son,
+        spouse: { id: 'kml', name: 'Kamala', cls: C.dil },
+        children: [
+          {
+            id: 'kus', name: 'Kusuma', cls: C.daughter,
+            spouse: { id: 'rud', name: 'Rudrappa RC Patil', cls: C.sil },
+            children: [
+              { id: 'mlg', name: 'Mallanagowda ★', cls: C.son, tag: 'stepson', spouse: { id: 'kvt', name: 'Kavitha', cls: C.dil }, children: [{ id: 'mhw', name: 'Maheshwari', cls: C.daughter }, { id: 'ans_m', name: 'Anushree', cls: C.daughter }] }
+            ]
+          },
+          {
+            id: 'sth_s', name: 'Sathish (S)', cls: C.son,
+            spouse: { id: 'vna', name: 'Veena', cls: C.dil },
+            children: [
+              { id: 'sndh_s', name: 'Sandhya (S)', cls: C.daughter, spouse: { id: 'prs_s', name: 'Prashanth', cls: C.sil }, children: [{ id: 'ary', name: 'Arya', cls: C.son }] },
+              { id: 'bhg', name: 'Bhagya †', cls: C.deceased }
+            ]
+          }
+        ]
+      },
+      // ── 6. GOVINDA ──────────────────────────────────────────────────────────
+      {
+        id: 'gov', name: 'Govinda', cls: C.son,
+        spouse: { id: 'rtn', name: 'Rathna', cls: C.dil },
+        children: [
+          { id: 'klp', name: 'Kalpana', cls: C.daughter, spouse: { id: 'rvp', name: 'Raviprakash', cls: C.sil }, children: [{ id: 'sknd', name: 'Skanda', cls: C.son }] },
+          { id: 'knc', name: 'Kanchana', cls: C.daughter, spouse: { id: 'vjk', name: 'Vijayakumar', cls: C.sil }, children: [{ id: 'dnv', name: 'Dhanvi', cls: C.daughter }] },
+          { id: 'mhs', name: 'Mahesh', cls: C.son, spouse: { id: 'uma_g', name: 'Uma (G)', cls: C.dil }, children: [{ id: 'stv_g', name: 'Sathvik (G)', cls: C.son }] }
+        ]
+      },
+      // ── 7. GOPALA ───────────────────────────────────────────────────────────
+      {
+        id: 'gop', name: 'Gopala', cls: C.son,
+        spouse: { id: 'vrm', name: 'Varamahalakshmi', cls: C.dil },
+        children: [
+          {
+            id: 'smt', name: 'Sumitra', cls: C.daughter,
+            spouse: { id: 'krm_g', name: 'Krishnamurthy (G)', cls: C.sil },
+            children: [
+              { id: 'aar', name: 'Aarathi', cls: C.daughter, tag: 'spouse unknown' },
+              { id: 'amb_g', name: 'Ambika', cls: C.daughter, tag: 'spouse unknown' },
+              { id: 'thm', name: 'Thimmappa', cls: C.son, tag: 'spouse unknown' }
+            ]
+          },
+          {
+            id: 'rvn', name: 'Ravindra', cls: C.son,
+            spouse: { id: 'vni', name: 'Vani', cls: C.dil },
+            children: [{ id: 'sup', name: 'Souparnika', cls: C.daughter, tag: 'spouse unknown' }]
+          }
+        ]
+      },
+      // ── 8. KAMALAKSHI ───────────────────────────────────────────────────────
+      {
+        id: 'kmlk', name: 'Kamalakshi', cls: C.daughter,
+        spouse: { id: 'rmc_h', name: 'Ramachandra (H)', cls: C.sil },
+        children: [
+          {
+            id: 'roh', name: 'Rohini', cls: C.daughter,
+            spouse: { id: 'prk_k', name: 'Prakash (K)', cls: C.sil },
+            children: [
+              { id: 'var', name: 'Varsha', cls: C.daughter, spouse: { id: 'nik', name: 'Nikhil', cls: C.sil }, children: [{ id: 'yth', name: 'Yatharva', cls: C.son }, { id: 'ish', name: 'Ishitha', cls: C.daughter }] }
+            ]
+          },
+          {
+            id: 'mrd', name: 'Muralidhara ⚭', cls: C.son,
+            cousinSpouseId: 'smg',
+            children: []
+          }
+        ]
+      },
+      // ── 9. PRABHAKARA ───────────────────────────────────────────────────────
+      {
+        id: 'pbk', name: 'Prabhakara', cls: C.son,
+        spouse: { id: 'kst', name: 'Kasturi', cls: C.dil },
+        children: [
+          { id: 'nvn', name: 'Naveen', cls: C.son, spouse: { id: 'swt', name: 'Shwetha', cls: C.dil }, children: [{ id: 'abv', name: 'Abhinav', cls: C.son }] },
+          { id: 'chet_p', name: 'Chethana (P)', cls: C.daughter, spouse: { id: 'chr', name: 'Charan', cls: C.sil }, children: [{ id: 'adt', name: 'Adithi', cls: C.daughter }] }
+        ]
+      },
+      // ── 10. SRIDHARA ────────────────────────────────────────────────────────
+      {
+        id: 'srd', name: 'Sridhara', cls: C.son,
+        spouse: { id: 'ngv', name: 'Nagaveni', cls: C.dil },
+        children: [
+          {
+            id: 'vkr', name: 'Vikram', cls: C.son,
+            spouse: { id: 'vid', name: 'Vidya', cls: C.dil },
+            children: [
+              { id: 'anp', name: 'Anupama ✦', cls: C.creator, tag: 'Creator of Website' }
+            ]
+          }
+        ]
+      }
+    ]
+  };
 
-      // Narayanamurthy children
-      { id: 37, mid: 26, fid: 25, pids: [38], name: "Manasa",       gender: "female" },
-      { id: 38, pids: [37],                   name: "Ananth",        gender: "male"   },
-      { id: 39, mid: 26, fid: 25, pids: [40], name: "Mythili",      gender: "female" },
-      { id: 40, pids: [39],                   name: "Renukaprasad",  gender: "male"   },
-      { id: 41, mid: 37, fid: 38,             name: "Aadhya",       gender: "female" },
-      { id: 42, mid: 39, fid: 40,             name: "Atharva",      gender: "male"   },
+  // ── LAYOUT ENGINE ───────────────────────────────────────────────────────────
+  const canvas  = document.getElementById('tree-canvas');
+  const svg     = document.getElementById('lines-svg');
+  const wrap    = document.getElementById('tree-wrap');
+  let   scale   = 1;
+  const positions = {};   // id → {x, y, w, h}
+  const cousinLinks = []; // [{from, to}]
 
-      // Raghavendra's daughter
-      { id: 43, mid: 29, fid: 28, name: "Uma", gender: "female" },
+  function nodeH(person) {
+    return person.tag ? 60 : NH;
+  }
 
-      // LAKSHMINARAYANA children
-      { id: 44, mid: 6, fid: 5,              name: "Paresh (spouse unknown)", gender: "male"   },
-      { id: 45, mid: 6, fid: 5, pids: [46],  name: "Indrakshi",   gender: "female" },
-      { id: 46, pids: [45],                  name: "Prakash",      gender: "male"   },
-      { id: 47, mid: 6, fid: 5, pids: [48],  name: "Savitha",     gender: "female" },
-      { id: 48, pids: [47],                  name: "Lakshmana",    gender: "male"   },
-      { id: 49, mid: 45, fid: 46, pids: [50], name: "Sanath Mihir", gender: "male" },
-      { id: 50, pids: [49],                   name: "Vasanthalakshmi", gender: "female" },
-      { id: 51, mid: 50, fid: 49,             name: "Child (unknown)", gender: "male" },
+  // Returns width of subtree rooted at person (including spouse side-by-side)
+  function subtreeWidth(person) {
+    const coupleW = person.spouse ? NW * 2 + GAP_X : NW;
+    if (!person.children || person.children.length === 0) return coupleW;
+    const childrenW = person.children.reduce((sum, c) => sum + subtreeWidth(c), 0)
+                    + (person.children.length - 1) * GAP_X;
+    return Math.max(coupleW, childrenW);
+  }
 
-      // PADMAVATHI children
-      { id: 52, mid: 7, fid: 8, pids: [53], name: "Rukmavathi",   gender: "female" },
-      { id: 53, pids: [52],                 name: "Krishnamurthy", gender: "male"   },
-      { id: 54, mid: 7, fid: 8, pids: [55], name: "Taarabai",     gender: "female" },
-      { id: 55, pids: [54],                 name: "Venkappa",      gender: "male"   },
-      { id: 67, mid: 7, fid: 8, pids: [27], name: "Manjappa ⚭",  gender: "male"   },
-      { id: 56, mid: 7, fid: 8, pids: [57], name: "Geetha",       gender: "female" },
-      { id: 57, pids: [56],                 name: "Prasad",        gender: "male"   },
-      { id: 58, mid: 7, fid: 8, pids: [59], name: "Gurumurthy",   gender: "male"   },
-      { id: 59, pids: [58],                 name: "Sharavathy",    gender: "female" },
-      { id: 60, mid: 7, fid: 8, pids: [61], name: "Nagaraj",      gender: "male"   },
-      { id: 61, pids: [60],                 name: "Sharada",       gender: "female" },
-      { id: 62, mid: 7, fid: 8, pids: [63], name: "Shailaja",     gender: "female" },
-      { id: 63, pids: [62],                 name: "Madhava Holla", gender: "male"   },
-      { id: 64, mid: 7, fid: 8, pids: [65], name: "Rekha",        gender: "female" },
-      { id: 65, pids: [64],                 name: "Purushotham",   gender: "male"   },
+  function place(person, x, y) {
+    const sw   = subtreeWidth(person);
+    const cx   = x + sw / 2; // centre of subtree
+    const h    = nodeH(person);
 
-      // Rukmavathi children
-      { id: 68, mid: 52, fid: 53, pids: [69], name: "Yashodha",     gender: "female" },
-      { id: 69, pids: [68],                   name: "Gopalakrishna", gender: "male"   },
-      { id: 70, mid: 52, fid: 53, pids: [71], name: "Venkatachala", gender: "male"   },
-      { id: 71, pids: [70],                   name: "Shanthala",     gender: "female" },
-      { id: 72, mid: 68, fid: 69, pids: [73], name: "Ajith",        gender: "male"   },
-      { id: 73, pids: [72],                   name: "Shruthi",       gender: "female" },
-      { id: 74, mid: 68, fid: 69, pids: [75], name: "Akshatha",     gender: "female" },
-      { id: 75, pids: [74],                   name: "Suresh (Y)",    gender: "male"   },
-      { id: 76, mid: 73, fid: 72,             name: "Daughter (unknown)", gender: "female" },
-      { id: 77, mid: 74, fid: 75,             name: "Child (unknown)",    gender: "male"   },
-      { id: 78, mid: 70, fid: 71, pids: [79], name: "Sindhu",       gender: "female" },
-      { id: 79, pids: [78],                   name: "Manjunatha",    gender: "male"   },
-      { id: 80, mid: 70, fid: 71,             name: "Sathvik (V)",   gender: "male"   },
-      { id: 81, mid: 78, fid: 79,             name: "Daughter (unknown)", gender: "female" },
+    // Place person node centred
+    const px = cx - NW / 2;
+    positions[person.id] = { x: px, y, w: NW, h };
 
-      // Taarabai children
-      { id: 82, mid: 54, fid: 55, pids: [83], name: "Suresh (T)", gender: "male"   },
-      { id: 83, pids: [82],                   name: "Vijaya",      gender: "female" },
-      { id: 84, mid: 54, fid: 55, pids: [85], name: "Srikanth",   gender: "male"   },
-      { id: 85, pids: [84],                   name: "Bharathi",    gender: "female" },
-      { id: 86, mid: 54, fid: 55, pids: [87], name: "Ashok",      gender: "male"   },
-      { id: 87, pids: [86],                   name: "Vidya (T)",   gender: "female" },
-      { id: 88, mid: 84, fid: 85,             name: "Sneha",      gender: "female" },
-      { id: 89, mid: 84, fid: 85,             name: "Smruthi",    gender: "female" },
-      { id: 90, mid: 86, fid: 87,             name: "Kavi",       gender: "male"   },
-      { id: 91, mid: 86, fid: 87,             name: "Kanthi",     gender: "female" },
+    // Place spouse to the right
+    if (person.spouse) {
+      positions[person.spouse.id] = { x: px + NW + GAP_X, y, w: NW, h };
+    }
 
-      // Manjappa & Shantha Kumari (cousin marriage)
-      { id: 92, mid: 27, fid: 67, pids: [93], name: "Navya",    gender: "female" },
-      { id: 93, pids: [92],                   name: "Abhijeet",  gender: "male"   },
-      { id: 94, mid: 92, fid: 93,             name: "Thejas",   gender: "male"   },
+    // Collect cousin links
+    if (person.cousinSpouseId) {
+      cousinLinks.push({ from: person.id, to: person.cousinSpouseId });
+    }
 
-      // Geetha children
-      { id: 96, mid: 56, fid: 57, pids: [97], name: "Goutham", gender: "male"   },
-      { id: 97, pids: [96],                   name: "Chethana", gender: "female" },
-      { id: 98, mid: 56, fid: 57, pids: [99], name: "Gourav",  gender: "male"   },
-      { id: 99, pids: [98],                   name: "Anusha",   gender: "female" },
-      { id: 100, mid: 98, fid: 99,            name: "Vakul",   gender: "male"   },
+    // Place children
+    if (person.children && person.children.length > 0) {
+      const childY = y + h + GAP_Y;
+      let childX   = x;
+      for (const child of person.children) {
+        place(child, childX, childY);
+        childX += subtreeWidth(child) + GAP_X;
+      }
+    }
+  }
 
-      // Gurumurthy son
-      { id: 101, mid: 58, fid: 59, name: "Ramanath", gender: "male" },
+  function createNode(person) {
+    const pos  = positions[person.id];
+    const div  = document.createElement('div');
+    div.className = 'node ' + person.cls;
+    div.id        = person.id === 'anp' ? 'creator' : person.id;
+    div.style.left   = pos.x + 'px';
+    div.style.top    = pos.y + 'px';
+    div.style.width  = NW + 'px';
+    div.style.minHeight = pos.h + 'px';
+    div.innerHTML = `<div class="node-name">${person.name}</div>${person.tag ? `<div class="node-tag">${person.tag}</div>` : ''}`;
+    canvas.appendChild(div);
 
-      // Nagaraj son
-      { id: 102, mid: 60, fid: 61, pids: [103], name: "Bhargav", gender: "male"   },
-      { id: 103, pids: [102],                   name: "Sandhya",  gender: "female" },
+    if (person.spouse && positions[person.spouse.id]) {
+      const sp   = person.spouse;
+      const spos = positions[sp.id];
+      const sdiv = document.createElement('div');
+      sdiv.className = 'node ' + sp.cls;
+      sdiv.id        = sp.id;
+      sdiv.style.left   = spos.x + 'px';
+      sdiv.style.top    = spos.y + 'px';
+      sdiv.style.width  = NW + 'px';
+      sdiv.style.minHeight = spos.h + 'px';
+      sdiv.innerHTML = `<div class="node-name">${sp.name}</div>`;
+      canvas.appendChild(sdiv);
+    }
 
-      // Rekha daughter
-      { id: 104, mid: 64, fid: 65, pids: [105], name: "Kavya",     gender: "female" },
-      { id: 105, pids: [104],                   name: "Hariprasad", gender: "male"   },
+    if (person.children) {
+      for (const child of person.children) createNode(child);
+    }
+  }
 
-      // PARVATHI (4th) children
-      { id: 106, mid: 9, fid: 10, pids: [107], name: "Lakshminarayana (P)", gender: "male"   },
-      { id: 107, pids: [106],                  name: "Jayalakshmi",          gender: "female" },
-      { id: 108, mid: 9, fid: 10, pids: [109], name: "Anusuya",             gender: "female" },
-      { id: 109, pids: [108],                  name: "Lakshminarayana (H)",  gender: "male"   },
-      { id: 110, mid: 9, fid: 10, pids: [111], name: "Prabhavathi",         gender: "female" },
-      { id: 111, pids: [110],                  name: "Gopal",                gender: "male"   },
-      { id: 112, mid: 9, fid: 10, pids: [113], name: "Narahari",            gender: "male"   },
-      { id: 113, pids: [112],                  name: "Jaya",                 gender: "female" },
-      { id: 114, mid: 106, fid: 107,           name: "Aparna (spouse unknown)", gender: "female" },
-      { id: 115, mid: 106, fid: 107,           name: "Pooja (spouse unknown)",  gender: "female" },
-      { id: 116, mid: 106, fid: 107, pids: [117], name: "Raghavendra (P)", gender: "male"   },
-      { id: 117, pids: [116],                     name: "Seema",            gender: "female" },
-      { id: 118, mid: 108, fid: 109, pids: [119], name: "Suresh (A)",      gender: "male"   },
-      { id: 119, pids: [118],                     name: "Vishalakshi",      gender: "female" },
-      { id: 120, mid: 108, fid: 109,              name: "Sathish (A) (spouse unknown)", gender: "male" },
-      { id: 121, mid: 108, fid: 109,              name: "Subhash (spouse unknown)",     gender: "male" },
-      { id: 122, mid: 112, fid: 113,              name: "Bharath (spouse unknown)",     gender: "male" },
-      { id: 123, mid: 112, fid: 113,              name: "Sharath (spouse unknown)",     gender: "male" },
+  function drawLines(person) {
+    const pos = positions[person.id];
+    if (!pos) return;
 
-      // SRINIVASA children
-      { id: 124, mid: 11, fid: 12, pids: [125], name: "Kusuma",           gender: "female" },
-      { id: 125, pids: [124],                   name: "Rudrappa RC Patil", gender: "male"   },
-      { id: 126, mid: 11, fid: 12, pids: [127], name: "Sathish (S)",      gender: "male"   },
-      { id: 127, pids: [126],                   name: "Veena",             gender: "female" },
-      { id: 128, mid: 124, fid: 125, pids: [129], name: "Mallanagowda ★ (stepson)", gender: "male" },
-      { id: 129, pids: [128],                     name: "Kavitha",                   gender: "female" },
-      { id: 130, mid: 128, fid: 129,              name: "Maheshwari", gender: "female" },
-      { id: 131, mid: 128, fid: 129,              name: "Anushree",   gender: "female" },
-      { id: 132, mid: 126, fid: 127, pids: [133], name: "Sandhya (S)", gender: "female" },
-      { id: 133, pids: [132],                     name: "Prashanth",   gender: "male"   },
-      { id: 134, mid: 126, fid: 127,              name: "Bhagya †",    gender: "female" },
-      { id: 135, mid: 132, fid: 133,              name: "Arya",        gender: "male"   },
+    // Line between person and spouse
+    if (person.spouse && positions[person.spouse.id]) {
+      const sp = positions[person.spouse.id];
+      addLine(pos.x + NW, pos.y + pos.h / 2, sp.x, sp.y + sp.h / 2);
+    }
 
-      // GOVINDA children
-      { id: 136, mid: 13, fid: 14, pids: [137], name: "Kalpana",    gender: "female" },
-      { id: 137, pids: [136],                   name: "Raviprakash", gender: "male"   },
-      { id: 138, mid: 13, fid: 14, pids: [139], name: "Kanchana",   gender: "female" },
-      { id: 139, pids: [138],                   name: "Vijayakumar", gender: "male"   },
-      { id: 140, mid: 13, fid: 14, pids: [141], name: "Mahesh",     gender: "male"   },
-      { id: 141, pids: [140],                   name: "Uma (G)",     gender: "female" },
-      { id: 142, mid: 136, fid: 137,            name: "Skanda",     gender: "male"   },
-      { id: 143, mid: 138, fid: 139,            name: "Dhanvi",     gender: "female" },
-      { id: 144, mid: 140, fid: 141,            name: "Sathvik (G)", gender: "male"  },
+    // Lines to children
+    if (person.children && person.children.length > 0) {
+      const parentMidX = pos.x + NW / 2 + (person.spouse ? (NW + GAP_X) / 2 : 0);
+      const parentBottomY = pos.y + pos.h;
+      const midY = parentBottomY + GAP_Y / 2;
 
-      // GOPALA children
-      { id: 145, mid: 15, fid: 16, pids: [146], name: "Sumitra",            gender: "female" },
-      { id: 146, pids: [145],                   name: "Krishnamurthy (G)",   gender: "male"   },
-      { id: 147, mid: 15, fid: 16, pids: [148], name: "Ravindra",           gender: "male"   },
-      { id: 148, pids: [147],                   name: "Vani",                gender: "female" },
-      { id: 149, mid: 145, fid: 146,            name: "Aarathi (spouse unknown)",  gender: "female" },
-      { id: 150, mid: 145, fid: 146,            name: "Ambika (spouse unknown)",   gender: "female" },
-      { id: 151, mid: 145, fid: 146,            name: "Thimmappa (spouse unknown)", gender: "male"  },
-      { id: 152, mid: 147, fid: 148,            name: "Souparnika (spouse unknown)", gender: "female" },
+      for (const child of person.children) {
+        const cpos = positions[child.id];
+        if (!cpos) continue;
+        const childMidX = cpos.x + NW / 2;
+        // Vertical from parent down to midY
+        addLine(parentMidX, parentBottomY, parentMidX, midY);
+        // Horizontal to child midX
+        addLine(parentMidX, midY, childMidX, midY);
+        // Vertical down to child
+        addLine(childMidX, midY, childMidX, cpos.y);
+        drawLines(child);
+      }
+    }
+  }
 
-      // KAMALAKSHI children
-      { id: 153, mid: 17, fid: 18, pids: [154], name: "Rohini",      gender: "female" },
-      { id: 154, pids: [153],                   name: "Prakash (K)", gender: "male"   },
-      { id: 95,  mid: 17, fid: 18, pids: [30],  name: "Muralidhara ⚭", gender: "male" },
-      { id: 155, mid: 153, fid: 154, pids: [156], name: "Varsha",  gender: "female" },
-      { id: 156, pids: [155],                     name: "Nikhil",   gender: "male"   },
-      { id: 157, mid: 30,  fid: 95,              name: "Sandesh",  gender: "male"   },
-      { id: 158, mid: 155, fid: 156,             name: "Yatharva", gender: "male"   },
-      { id: 159, mid: 155, fid: 156,             name: "Ishitha",  gender: "female" },
+  function addLine(x1, y1, x2, y2, cls) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    if (cls) line.setAttribute('class', cls);
+    svg.appendChild(line);
+  }
 
-      // PRABHAKARA children
-      { id: 160, mid: 19, fid: 20, pids: [161], name: "Naveen",        gender: "male"   },
-      { id: 161, pids: [160],                   name: "Shwetha",        gender: "female" },
-      { id: 162, mid: 19, fid: 20, pids: [163], name: "Chethana (P)",  gender: "female" },
-      { id: 163, pids: [162],                   name: "Charan",         gender: "male"   },
-      { id: 164, mid: 160, fid: 161,            name: "Abhinav",       gender: "male"   },
-      { id: 165, mid: 162, fid: 163,            name: "Adithi",        gender: "female" },
+  function drawCousinLinks() {
+    for (const link of cousinLinks) {
+      const a = positions[link.from];
+      const b = positions[link.to];
+      if (!a || !b) continue;
+      // Dashed line between the two cousin-marriage nodes
+      addLine(a.x + NW / 2, a.y + a.h, b.x + NW / 2, b.y + b.h, 'cousin-link');
+    }
+  }
 
-      // SRIDHARA children
-      { id: 166, mid: 21, fid: 22, pids: [167], name: "Vikram",   gender: "male"   },
-      { id: 167, pids: [166],                   name: "Vidya",     gender: "female" },
-      { id: 168, mid: 166, fid: 167,            name: "Anupama ✦", gender: "female" }
-    ];
+  function render() {
+    // Clear
+    canvas.innerHTML = '<svg id="lines-svg"></svg>';
+    const svgEl = document.getElementById('lines-svg');
 
-    var family = new FamilyTree(document.getElementById("tree-container"), {
-      mode: "light",
-      scaleInitial: FamilyTree.match.boundary,
-      enableSearch: false,
-      mouseScrool: FamilyTree.action.zoom,
-      nodeBinding: { field_0: "name" },
-      nodes: nodes,
-      roots: [1],
-      orientation: FamilyTree.orientation.top,
-      toolbar: { layout: false, zoom: false, fit: false, expandAll: false }
-    });
+    // Layout
+    place(tree, 0, 0);
 
-    function zoomIn()    { family.zoom(true);  }
-    function zoomOut()   { family.zoom(false); }
-    function zoomReset() { family.fit();       }
+    // Find canvas size
+    let maxX = 0, maxY = 0;
+    for (const pos of Object.values(positions)) {
+      maxX = Math.max(maxX, pos.x + pos.w);
+      maxY = Math.max(maxY, pos.y + pos.h);
+    }
+    canvas.style.width  = (maxX + 40) + 'px';
+    canvas.style.height = (maxY + 40) + 'px';
+    svgEl.setAttribute('width',  maxX + 40);
+    svgEl.setAttribute('height', maxY + 40);
+
+    // Draw nodes
+    createNode(tree);
+
+    // Draw lines
+    drawLines(tree);
+    drawCousinLinks();
+  }
+
+  // ── ZOOM ────────────────────────────────────────────────────────────────────
+  function applyScale() {
+    canvas.style.transform = `scale(${scale})`;
+  }
+
+  function zoomIn()  { scale = Math.min(scale + 0.1, 2);   applyScale(); }
+  function zoomOut() { scale = Math.max(scale - 0.1, 0.2); applyScale(); }
+
+  function zoomFit() {
+    const ww = wrap.clientWidth  - 48;
+    const wh = wrap.clientHeight - 48;
+    const cw = parseFloat(canvas.style.width);
+    const ch = parseFloat(canvas.style.height);
+    scale = Math.min(ww / cw, wh / ch, 1);
+    applyScale();
+    canvas.style.transformOrigin = 'top left';
+  }
+
+  // ── INIT ────────────────────────────────────────────────────────────────────
+  render();
+  setTimeout(zoomFit, 100);
+
+  // Scroll to creator node if hash
+  if (location.hash === '#creator') {
+    setTimeout(() => {
+      const el = document.getElementById('creator');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+  }
   </script>
 
 </body>
