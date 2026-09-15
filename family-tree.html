@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Family Tree — The Nisarani Family</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -43,64 +43,137 @@
     nav a:hover { color: #f5f0e8; }
     nav a.active { color: #ffffff; font-weight: 500; }
 
-    #tree-wrap {
+    #viewport {
       position: fixed;
       top: 52px; bottom: 40px;
       left: 0; right: 0;
       overflow: auto;
+    }
+
+    #stage {
+      position: relative;
+      min-width: 100%;
+      min-height: 100%;
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding: 40px 24px;
+      padding: 60px 40px 80px;
     }
 
-    #tree-canvas {
+    #tree-root {
       position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
       transform-origin: top center;
     }
 
-    /* Legend */
-    .legend {
-      position: fixed;
-      top: 68px;
-      left: 16px;
-      background: rgba(245,240,232,0.95);
-      border: 1px solid #d4b896;
-      border-radius: 6px;
-      padding: 10px 14px;
-      z-index: 99;
-      font-size: 11px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .legend-item {
+    /* ── COUPLE ROW ── */
+    .couple-row {
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: #2d4a3e;
+      gap: 0;
+      position: relative;
     }
 
-    .legend-dot {
-      width: 14px; height: 14px;
-      border-radius: 2px;
+    .couple-connector {
+      width: 24px;
+      height: 2px;
+      background: #a8c5a0;
       flex-shrink: 0;
     }
 
-    /* Zoom controls */
-    .zoom-controls {
+    /* ── NODE ── */
+    .node {
+      width: 130px;
+      padding: 8px 10px;
+      border-radius: 5px;
+      text-align: center;
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      font-size: 12px;
+      line-height: 1.4;
+      border-width: 2px;
+      border-style: solid;
+      user-select: none;
+      position: relative;
+    }
+
+    .node.clickable {
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .node.clickable:hover {
+      box-shadow: 0 4px 14px rgba(30,51,41,0.2);
+      transform: translateY(-2px);
+    }
+
+    .node.expanded { box-shadow: 0 0 0 3px rgba(168,197,160,0.4); }
+
+    /* colour classes */
+    .founder    { background: #fff3e0; border-color: #c8843c; }
+    .son        { background: #e8f4f0; border-color: #4a7c6e; }
+    .daughter   { background: #f0f7ee; border-color: #a8c5a0; }
+    .son-in-law { background: #fdf6ee; border-color: #d4b896; }
+    .dau-in-law { background: #eef4f0; border-color: #2d4a3e; }
+    .deceased   { background: #f0ece8; border-color: #a09080; opacity: 0.75; }
+    .creator    { background: #fff3e0; border-color: #c8843c; box-shadow: 0 0 0 3px rgba(200,132,60,0.35); }
+
+    .node-name  { font-weight: 500; color: #1e3329; font-size: 12px; }
+
+    /* ── VERTICAL CONNECTOR ── */
+    .v-line {
+      width: 2px;
+      background: #a8c5a0;
+      margin: 0 auto;
+    }
+
+    /* ── CHILDREN ROW ── */
+    .children-wrap {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .children-wrap.visible { display: flex; }
+
+    .children-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      position: relative;
+    }
+
+    /* horizontal line spanning children */
+    .h-bar {
+      position: absolute;
+      top: 0;
+      height: 2px;
+      background: #a8c5a0;
+    }
+
+    /* each child column */
+    .child-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 16px;
+      position: relative;
+    }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
       position: fixed;
-      bottom: 56px;
+      bottom: 52px;
       right: 16px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
       z-index: 99;
     }
 
-    .zoom-btn {
-      width: 34px; height: 34px;
+    .tb-btn {
+      width: 36px; height: 36px;
       background: #2d4a3e;
       color: #f5f0e8;
       border: none;
@@ -113,8 +186,86 @@
       transition: background 0.2s;
     }
 
-    .zoom-btn:hover { background: #1e3329; }
-    .zoom-fit { font-size: 10px; letter-spacing: 0.04em; }
+    .tb-btn:hover { background: #1e3329; }
+    .tb-btn.small { font-size: 10px; letter-spacing: 0.03em; }
+
+    /* ── LEGEND ── */
+    .legend-wrap {
+      position: fixed;
+      bottom: 40px;
+      left: 0; right: 0;
+      z-index: 99;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .legend-inner {
+      pointer-events: all;
+      background: rgba(245,240,232,0.97);
+      border: 1px solid #d4b896;
+      border-radius: 6px 6px 0 0;
+      overflow: hidden;
+      font-size: 11px;
+    }
+
+    .legend-toggle {
+      padding: 5px 20px;
+      cursor: pointer;
+      color: #2d4a3e;
+      text-align: center;
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      border-bottom: 1px solid transparent;
+      transition: background 0.2s;
+    }
+
+    .legend-toggle:hover { background: #ede8dc; }
+
+    .legend-body {
+      display: none;
+      padding: 10px 16px;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      border-top: 1px solid #d4b896;
+    }
+
+    .legend-body.open { display: flex; }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #2d4a3e;
+      white-space: nowrap;
+    }
+
+    .legend-dot {
+      width: 14px; height: 14px;
+      border-radius: 2px;
+      border-width: 2px;
+      border-style: solid;
+      flex-shrink: 0;
+    }
+
+    /* ── SHOW ALL button ── */
+    .show-all-btn {
+      position: fixed;
+      bottom: 52px;
+      left: 16px;
+      background: #2d4a3e;
+      color: #f5f0e8;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-family: 'Tiro Devanagari Sanskrit', serif;
+      cursor: pointer;
+      z-index: 99;
+      transition: background 0.2s;
+    }
+
+    .show-all-btn:hover { background: #1e3329; }
 
     footer {
       position: fixed;
@@ -143,567 +294,575 @@
 
     .footer-creator:hover { color: #f5f0e8; }
 
-    /* Tree nodes */
-    .node {
-      position: absolute;
-      width: 130px;
-      padding: 8px 10px;
-      border-radius: 5px;
-      text-align: center;
-      font-family: 'Tiro Devanagari Sanskrit', serif;
-      font-size: 12px;
-      line-height: 1.4;
-      cursor: pointer;
-      transition: box-shadow 0.2s, transform 0.2s;
-      border-width: 2px;
-      border-style: solid;
-      z-index: 2;
-      user-select: none;
+    .highlight-pulse {
+      animation: pulse 1.5s ease 3;
     }
 
-    .node:hover { box-shadow: 0 4px 14px rgba(30,51,41,0.18); transform: translateY(-1px); }
-
-    .node.founder    { background: #fff3e0; border-color: #c8843c; }
-    .node.son        { background: #e8f4f0; border-color: #4a7c6e; }
-    .node.daughter   { background: #f0f7ee; border-color: #a8c5a0; }
-    .node.son-in-law { background: #fdf6ee; border-color: #d4b896; }
-    .node.dau-in-law { background: #eef4f0; border-color: #2d4a3e; }
-    .node.unknown    { background: #f5f0e8; border-color: #c8c0b0; border-style: dashed; }
-    .node.deceased   { background: #f0ece8; border-color: #a09080; opacity: 0.75; }
-    .node.creator    { background: #fff3e0; border-color: #c8843c; box-shadow: 0 0 0 3px rgba(200,132,60,0.25); }
-    .node.cousin-marker { font-size: 10px; }
-
-    .node-name { font-weight: 500; color: #1e3329; }
-    .node-tag  { font-size: 10px; color: #4a7c6e; margin-top: 2px; }
-
-    /* Connector lines via SVG overlay */
-    #lines-svg {
-      position: absolute;
-      top: 0; left: 0;
-      pointer-events: none;
-      z-index: 1;
-      overflow: visible;
-    }
-
-    line, path {
-      stroke: #a8c5a0;
-      stroke-width: 1.5;
-      fill: none;
-    }
-
-    line.cousin-link {
-      stroke: #c8843c;
-      stroke-width: 1.5;
-      stroke-dasharray: 4 3;
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(200,132,60,0.6); }
+      70%  { box-shadow: 0 0 0 10px rgba(200,132,60,0); }
+      100% { box-shadow: 0 0 0 0 rgba(200,132,60,0); }
     }
   </style>
 </head>
 <body>
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="our-roots.html">Our Roots</a>
-    <a href="family-tree.html" class="active">Family Tree</a>
-    <a href="#">Events</a>
-    <a href="#">Birthdays</a>
-  </nav>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="our-roots.html">Our Roots</a>
+  <a href="family-tree.html" class="active">Family Tree</a>
+  <a href="#">Events</a>
+  <a href="#">Birthdays</a>
+</nav>
 
-  <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#fff3e0;border:2px solid #c8843c"></div> Founders</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#e8f4f0;border:2px solid #4a7c6e"></div> Sons</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#f0f7ee;border:2px solid #a8c5a0"></div> Daughters</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#fdf6ee;border:2px solid #d4b896"></div> Sons-in-law</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#eef4f0;border:2px solid #2d4a3e"></div> Daughters-in-law</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#f5f0e8;border:2px dashed #c8c0b0"></div> Unknown</div>
-    <div class="legend-item" style="color:#c8843c">⚭ Cousin marriage</div>
-    <div class="legend-item" style="color:#a09080">† Deceased</div>
-    <div class="legend-item" style="color:#c8843c">✦ Website creator</div>
+<div id="viewport">
+  <div id="stage">
+    <div id="tree-root"></div>
   </div>
+</div>
 
-  <div id="tree-wrap">
-    <div id="tree-canvas">
-      <svg id="lines-svg"></svg>
+<button class="show-all-btn" onclick="toggleAll()">Show All</button>
+
+<div class="toolbar">
+  <button class="tb-btn" onclick="zoom(0.1)">+</button>
+  <button class="tb-btn small" onclick="zoomFit()">fit</button>
+  <button class="tb-btn" onclick="zoom(-0.1)">−</button>
+</div>
+
+<div class="legend-wrap">
+  <div class="legend-inner">
+    <div class="legend-toggle" onclick="toggleLegend()">▲ Legend</div>
+    <div class="legend-body" id="legend-body">
+      <div class="legend-item"><div class="legend-dot" style="background:#fff3e0;border-color:#c8843c"></div> Founders</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e8f4f0;border-color:#4a7c6e"></div> Sons</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f0f7ee;border-color:#a8c5a0"></div> Daughters</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fdf6ee;border-color:#d4b896"></div> Sons-in-law</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#eef4f0;border-color:#2d4a3e"></div> Daughters-in-law</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f0ece8;border-color:#a09080"></div> Deceased †</div>
+      <div class="legend-item" style="color:#c8843c">⚭ Cousin marriage</div>
     </div>
   </div>
+</div>
 
-  <div class="zoom-controls">
-    <button class="zoom-btn" onclick="zoomIn()">+</button>
-    <button class="zoom-btn zoom-fit" onclick="zoomFit()">fit</button>
-    <button class="zoom-btn" onclick="zoomOut()">−</button>
-  </div>
+<footer>
+  <div class="footer-main">© 2025 The Nisarani Family &nbsp;|&nbsp; Made with Love &nbsp;|&nbsp; <a href="family-tree.html#creator" class="footer-creator">Creator of the Website</a></div>
+</footer>
 
-  <footer>
-    <div class="footer-main">© 2025 The Nisarani Family &nbsp;|&nbsp; Made with Love &nbsp;|&nbsp; <a href="family-tree.html#creator" class="footer-creator">Creator of the Website</a></div>
-  </footer>
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+// cls: son | daughter | son-in-law | dau-in-law | founder | deceased | creator
+// spouse: shown when parent is clicked
+// children: shown when this node is clicked
+// cousinMarriage: true → shows ⚭
 
-  <script>
-  // ── COLOUR HELPERS ──────────────────────────────────────────────────────────
-  const C = {
-    founder:    'founder',
-    son:        'son',
-    daughter:   'daughter',
-    sil:        'son-in-law',
-    dil:        'dau-in-law',
-    unknown:    'unknown',
-    deceased:   'deceased',
-    creator:    'creator'
-  };
+const DATA = {
+  id:'vr', name:'Venkabhatta', cls:'founder',
+  spouse:{ id:'ru', name:'Rukmini', cls:'founder' },
+  children:[
+    // 1. RAMACHANDRA
+    { id:'rc', name:'Ramachandra', cls:'son',
+      spouse:{ id:'rc_w', name:'Parvathi', cls:'dau-in-law' },
+      children:[
+        { id:'vg_r', name:'Venkatagiri (R)', cls:'son',
+          spouse:{ id:'rd', name:'Ramadevi', cls:'dau-in-law' },
+          children:[
+            { id:'pvt', name:'Pavitra', cls:'daughter',
+              spouse:{ id:'prs', name:'Prashanth', cls:'son-in-law' },
+              children:[{ id:'prn', name:'Pranava', cls:'son' }] },
+            { id:'pvn', name:'Pavana', cls:'daughter',
+              spouse:{ id:'kir', name:'Kiran', cls:'son-in-law' },
+              children:[{ id:'aom', name:'Adi Om', cls:'son' }] }
+          ]},
+        { id:'nm', name:'Narayanamurthy', cls:'son',
+          spouse:{ id:'kv', name:'Krishnaveni', cls:'dau-in-law' },
+          children:[
+            { id:'mns', name:'Manasa', cls:'daughter',
+              spouse:{ id:'ant', name:'Ananth', cls:'son-in-law' },
+              children:[{ id:'aad', name:'Aadhya', cls:'daughter' }] },
+            { id:'myt', name:'Mythili', cls:'daughter',
+              spouse:{ id:'rp', name:'Renukaprasad', cls:'son-in-law' },
+              children:[{ id:'ath', name:'Atharva', cls:'son' }] }
+          ]},
+        { id:'sk', name:'Shantha Kumari ⚭', cls:'daughter', cousinMarriage:true,
+          spouse:{ id:'mj', name:'Manjappa ⚭', cls:'son-in-law', cousinMarriage:true },
+          children:[
+            { id:'nvy', name:'Navya', cls:'daughter',
+              spouse:{ id:'abj', name:'Abhijeet', cls:'son-in-law' },
+              children:[{ id:'thj', name:'Thejas', cls:'son' }] }
+          ]},
+        { id:'rgh', name:'Raghavendra', cls:'son',
+          spouse:{ id:'ngr', name:'Nagratna', cls:'dau-in-law' },
+          children:[{ id:'uma_r', name:'Uma', cls:'daughter' }] },
+        { id:'smg', name:'Sumangala ⚭', cls:'daughter', cousinMarriage:true,
+          spouse:{ id:'mrd', name:'Muralidhara ⚭', cls:'son-in-law', cousinMarriage:true },
+          children:[{ id:'snd', name:'Sandesh', cls:'son' }] }
+      ]},
+    // 2. LAKSHMINARAYANA
+    { id:'ln', name:'Lakshminarayana', cls:'son',
+      spouse:{ id:'amb', name:'Ambuja', cls:'dau-in-law' },
+      children:[
+        { id:'par', name:'Paresh', cls:'son' },
+        { id:'ind', name:'Indrakshi', cls:'daughter',
+          spouse:{ id:'prk', name:'Prakash', cls:'son-in-law' },
+          children:[
+            { id:'sm', name:'Sanath Mihir', cls:'son',
+              spouse:{ id:'vsl', name:'Vasanthalakshmi', cls:'dau-in-law' },
+              children:[{ id:'unk1', name:'Child (unknown)', cls:'son' }] }
+          ]},
+        { id:'sav', name:'Savitha', cls:'daughter',
+          spouse:{ id:'lkm', name:'Lakshmana', cls:'son-in-law' },
+          children:[] }
+      ]},
+    // 3. PADMAVATHI
+    { id:'pdm', name:'Padmavathi', cls:'daughter',
+      spouse:{ id:'nrp', name:'Narayanappa', cls:'son-in-law' },
+      children:[
+        { id:'rkm', name:'Rukmavathi', cls:'daughter',
+          spouse:{ id:'krm', name:'Krishnamurthy', cls:'son-in-law' },
+          children:[
+            { id:'ysh', name:'Yashodha', cls:'daughter',
+              spouse:{ id:'gpk', name:'Gopalakrishna', cls:'son-in-law' },
+              children:[
+                { id:'ajt', name:'Ajith', cls:'son',
+                  spouse:{ id:'shr', name:'Shruthi', cls:'dau-in-law' },
+                  children:[{ id:'dunk1', name:'Child (unknown)', cls:'daughter' }] },
+                { id:'aksh', name:'Akshatha', cls:'daughter',
+                  spouse:{ id:'sur_y', name:'Suresh (Y)', cls:'son-in-law' },
+                  children:[{ id:'cunk1', name:'Child (unknown)', cls:'son' }] }
+              ]},
+            { id:'vtc', name:'Venkatachala', cls:'son',
+              spouse:{ id:'shnl', name:'Shanthala', cls:'dau-in-law' },
+              children:[
+                { id:'snd_v', name:'Sindhu', cls:'daughter',
+                  spouse:{ id:'mjn', name:'Manjunatha', cls:'son-in-law' },
+                  children:[{ id:'dunk2', name:'Child (unknown)', cls:'daughter' }] },
+                { id:'stv_v', name:'Sathvik (V)', cls:'son' }
+              ]}
+          ]},
+        { id:'trb', name:'Taarabai', cls:'daughter',
+          spouse:{ id:'vkp', name:'Venkappa', cls:'son-in-law' },
+          children:[
+            { id:'sur_t', name:'Suresh (T)', cls:'son',
+              spouse:{ id:'vij', name:'Vijaya', cls:'dau-in-law' },
+              children:[] },
+            { id:'srk', name:'Srikanth', cls:'son',
+              spouse:{ id:'bhr', name:'Bharathi', cls:'dau-in-law' },
+              children:[
+                { id:'snh', name:'Sneha', cls:'daughter' },
+                { id:'smr', name:'Smruthi', cls:'daughter' }
+              ]},
+            { id:'ash', name:'Ashok', cls:'son',
+              spouse:{ id:'vid_t', name:'Vidya (T)', cls:'dau-in-law' },
+              children:[
+                { id:'kav', name:'Kavi', cls:'son' },
+                { id:'knt', name:'Kanthi', cls:'daughter' }
+              ]}
+          ]},
+        { id:'mj_p', name:'Manjappa ⚭', cls:'son', cousinMarriage:true,
+          spouse:{ id:'sk_p', name:'Shantha Kumari ⚭', cls:'dau-in-law', cousinMarriage:true },
+          children:[
+            { id:'nvy_p', name:'Navya', cls:'daughter',
+              spouse:{ id:'abj_p', name:'Abhijeet', cls:'son-in-law' },
+              children:[{ id:'thj_p', name:'Thejas', cls:'son' }] }
+          ]},
+        { id:'gth', name:'Geetha', cls:'daughter',
+          spouse:{ id:'prs_g', name:'Prasad', cls:'son-in-law' },
+          children:[
+            { id:'gtm', name:'Goutham', cls:'son',
+              spouse:{ id:'chet', name:'Chethana', cls:'dau-in-law' },
+              children:[] },
+            { id:'grv', name:'Gourav', cls:'son',
+              spouse:{ id:'anu', name:'Anusha', cls:'dau-in-law' },
+              children:[{ id:'vkl', name:'Vakul', cls:'son' }] }
+          ]},
+        { id:'grm', name:'Gurumurthy', cls:'son',
+          spouse:{ id:'srv', name:'Sharavathy', cls:'dau-in-law' },
+          children:[{ id:'rmn', name:'Ramanath', cls:'son' }] },
+        { id:'ngr_p', name:'Nagaraj', cls:'son',
+          spouse:{ id:'shrd', name:'Sharada', cls:'dau-in-law' },
+          children:[
+            { id:'bhrg', name:'Bhargav', cls:'son',
+              spouse:{ id:'sndh', name:'Sandhya', cls:'dau-in-law' },
+              children:[] }
+          ]},
+        { id:'shlj', name:'Shailaja', cls:'daughter',
+          spouse:{ id:'mdh', name:'Madhava Holla', cls:'son-in-law' },
+          children:[] },
+        { id:'rkh', name:'Rekha', cls:'daughter',
+          spouse:{ id:'prs_r', name:'Purushotham', cls:'son-in-law' },
+          children:[
+            { id:'kvy', name:'Kavya', cls:'daughter',
+              spouse:{ id:'hrp', name:'Hariprasad', cls:'son-in-law' },
+              children:[] }
+          ]}
+      ]},
+    // 4. PARVATHI (4th)
+    { id:'prv4', name:'Parvathi (4th)', cls:'daughter',
+      spouse:{ id:'vg4', name:'Venkatagiri', cls:'son-in-law' },
+      children:[
+        { id:'ln_p', name:'Lakshminarayana (P)', cls:'son',
+          spouse:{ id:'jyl', name:'Jayalakshmi', cls:'dau-in-law' },
+          children:[
+            { id:'apr', name:'Aparna', cls:'daughter' },
+            { id:'poj', name:'Pooja', cls:'daughter' },
+            { id:'rgh_p', name:'Raghavendra (P)', cls:'son',
+              spouse:{ id:'sem', name:'Seema', cls:'dau-in-law' },
+              children:[] }
+          ]},
+        { id:'ans', name:'Anusuya', cls:'daughter',
+          spouse:{ id:'ln_h', name:'Lakshminarayana (H)', cls:'son-in-law' },
+          children:[
+            { id:'sur_a', name:'Suresh (A)', cls:'son',
+              spouse:{ id:'vsh', name:'Vishalakshi', cls:'dau-in-law' },
+              children:[] },
+            { id:'sth_a', name:'Sathish (A)', cls:'son' },
+            { id:'sub', name:'Subhash', cls:'son' }
+          ]},
+        { id:'prb', name:'Prabhavathi', cls:'daughter',
+          spouse:{ id:'gpl', name:'Gopal', cls:'son-in-law' },
+          children:[] },
+        { id:'nrh', name:'Narahari', cls:'son',
+          spouse:{ id:'jya', name:'Jaya', cls:'dau-in-law' },
+          children:[
+            { id:'bhr_n', name:'Bharath', cls:'son' },
+            { id:'shr_n', name:'Sharath', cls:'son' }
+          ]}
+      ]},
+    // 5. SRINIVASA
+    { id:'srv_s', name:'Srinivasa', cls:'son',
+      spouse:{ id:'kml', name:'Kamala', cls:'dau-in-law' },
+      children:[
+        { id:'kus', name:'Kusuma', cls:'daughter',
+          spouse:{ id:'rud', name:'Rudrappa RC Patil', cls:'son-in-law' },
+          children:[
+            { id:'mlg', name:'Mallanagowda', cls:'son',
+              spouse:{ id:'kvt', name:'Kavitha', cls:'dau-in-law' },
+              children:[
+                { id:'mhw', name:'Maheshwari', cls:'daughter' },
+                { id:'ans_m', name:'Anushree', cls:'daughter' }
+              ]}
+          ]},
+        { id:'sth_s', name:'Sathish (S)', cls:'son',
+          spouse:{ id:'vna', name:'Veena', cls:'dau-in-law' },
+          children:[
+            { id:'sndh_s', name:'Sandhya (S)', cls:'daughter',
+              spouse:{ id:'prs_s', name:'Prashanth', cls:'son-in-law' },
+              children:[{ id:'ary', name:'Arya', cls:'son' }] },
+            { id:'bhg', name:'Bhagya', cls:'deceased' }
+          ]}
+      ]},
+    // 6. GOVINDA
+    { id:'gov', name:'Govinda', cls:'son',
+      spouse:{ id:'rtn', name:'Rathna', cls:'dau-in-law' },
+      children:[
+        { id:'klp', name:'Kalpana', cls:'daughter',
+          spouse:{ id:'rvp', name:'Raviprakash', cls:'son-in-law' },
+          children:[{ id:'sknd', name:'Skanda', cls:'son' }] },
+        { id:'knc', name:'Kanchana', cls:'daughter',
+          spouse:{ id:'vjk', name:'Vijayakumar', cls:'son-in-law' },
+          children:[{ id:'dnv', name:'Dhanvi', cls:'daughter' }] },
+        { id:'mhs', name:'Mahesh', cls:'son',
+          spouse:{ id:'uma_g', name:'Uma (G)', cls:'dau-in-law' },
+          children:[{ id:'stv_g', name:'Sathvik (G)', cls:'son' }] }
+      ]},
+    // 7. GOPALA
+    { id:'gop', name:'Gopala', cls:'son',
+      spouse:{ id:'vrm', name:'Varamahalakshmi', cls:'dau-in-law' },
+      children:[
+        { id:'smt', name:'Sumitra', cls:'daughter',
+          spouse:{ id:'krm_g', name:'Krishnamurthy (G)', cls:'son-in-law' },
+          children:[
+            { id:'aar', name:'Aarathi', cls:'daughter' },
+            { id:'amb_g', name:'Ambika', cls:'daughter' },
+            { id:'thm', name:'Thimmappa', cls:'son' }
+          ]},
+        { id:'rvn', name:'Ravindra', cls:'son',
+          spouse:{ id:'vni', name:'Vani', cls:'dau-in-law' },
+          children:[{ id:'sup', name:'Souparnika', cls:'daughter' }] }
+      ]},
+    // 8. KAMALAKSHI
+    { id:'kmlk', name:'Kamalakshi', cls:'daughter',
+      spouse:{ id:'rmc_h', name:'Ramachandra (H)', cls:'son-in-law' },
+      children:[
+        { id:'roh', name:'Rohini', cls:'daughter',
+          spouse:{ id:'prk_k', name:'Prakash (K)', cls:'son-in-law' },
+          children:[
+            { id:'var', name:'Varsha', cls:'daughter',
+              spouse:{ id:'nik', name:'Nikhil', cls:'son-in-law' },
+              children:[
+                { id:'yth', name:'Yatharva', cls:'son' },
+                { id:'ish', name:'Ishitha', cls:'daughter' }
+              ]}
+          ]},
+        { id:'mrd_k', name:'Muralidhara ⚭', cls:'son', cousinMarriage:true,
+          spouse:{ id:'smg_k', name:'Sumangala ⚭', cls:'dau-in-law', cousinMarriage:true },
+          children:[{ id:'snd_k', name:'Sandesh', cls:'son' }] }
+      ]},
+    // 9. PRABHAKARA
+    { id:'pbk', name:'Prabhakara', cls:'son',
+      spouse:{ id:'kst', name:'Kasturi', cls:'dau-in-law' },
+      children:[
+        { id:'nvn', name:'Naveen', cls:'son',
+          spouse:{ id:'swt', name:'Shwetha', cls:'dau-in-law' },
+          children:[{ id:'abv', name:'Abhinav', cls:'son' }] },
+        { id:'chet_p', name:'Chethana (P)', cls:'daughter',
+          spouse:{ id:'chr', name:'Charan', cls:'son-in-law' },
+          children:[{ id:'adt', name:'Adithi', cls:'daughter' }] }
+      ]},
+    // 10. SRIDHARA
+    { id:'srd', name:'Sridhara', cls:'son',
+      spouse:{ id:'ngv', name:'Nagaveni', cls:'dau-in-law' },
+      children:[
+        { id:'vkr', name:'Vikram', cls:'son',
+          spouse:{ id:'vid', name:'Vidya', cls:'dau-in-law' },
+          children:[
+            { id:'anp', name:'Anupama', cls:'creator' }
+          ]}
+      ]}
+  ]
+};
 
-  // ── NODE WIDTH / HEIGHT ─────────────────────────────────────────────────────
-  const NW = 130, NH = 50, GAP_X = 20, GAP_Y = 80;
+// ── BUILD DOM ─────────────────────────────────────────────────────────────────
+const root = document.getElementById('tree-root');
+let showAllState = false;
 
-  // ── TREE DATA ───────────────────────────────────────────────────────────────
-  // Each person: { id, name, cls, tag?, children:[] }
-  // Couples rendered side by side; children rendered below
-  // Cousin marriages marked with cousinOf:[id] — a dashed line is drawn
+function buildNode(person, isFounder) {
+  // Wrapper column for this person + their subtree
+  const col = document.createElement('div');
+  col.className = 'child-col';
+  col.dataset.id = person.id;
 
-  const tree = {
-    id: 'vr', name: 'Venkabhatta', cls: C.founder,
-    spouse: { id: 'ru', name: 'Rukmini', cls: C.founder },
-    children: [
-      // ── 1. RAMACHANDRA ──────────────────────────────────────────────────────
-      {
-        id: 'rc', name: 'Ramachandra', cls: C.son,
-        spouse: { id: 'rc_w', name: 'Parvathi', cls: C.dil },
-        children: [
-          {
-            id: 'vg_r', name: 'Venkatagiri (R)', cls: C.son,
-            spouse: { id: 'rd', name: 'Ramadevi', cls: C.dil },
-            children: [
-              { id: 'pvt', name: 'Pavitra', cls: C.daughter, spouse: { id: 'prs', name: 'Prashanth', cls: C.sil }, children: [{ id: 'prn', name: 'Pranava', cls: C.son }] },
-              { id: 'pvn', name: 'Pavana', cls: C.daughter, spouse: { id: 'kir', name: 'Kiran', cls: C.sil }, children: [{ id: 'aom', name: 'Adi Om', cls: C.son }] }
-            ]
-          },
-          {
-            id: 'nm', name: 'Narayanamurthy', cls: C.son,
-            spouse: { id: 'kv', name: 'Krishnaveni', cls: C.dil },
-            children: [
-              { id: 'mns', name: 'Manasa', cls: C.daughter, spouse: { id: 'ant', name: 'Ananth', cls: C.sil }, children: [{ id: 'aad', name: 'Aadhya', cls: C.daughter }] },
-              { id: 'myt', name: 'Mythili', cls: C.daughter, spouse: { id: 'rp', name: 'Renukaprasad', cls: C.sil }, children: [{ id: 'ath', name: 'Atharva', cls: C.son }] }
-            ]
-          },
-          {
-            id: 'sk', name: 'Shantha Kumari ⚭', cls: C.daughter,
-            cousinSpouseId: 'mj',
-            children: [
-              { id: 'nvy', name: 'Navya', cls: C.daughter, spouse: { id: 'abj', name: 'Abhijeet', cls: C.sil }, children: [{ id: 'thj', name: 'Thejas', cls: C.son }] }
-            ]
-          },
-          {
-            id: 'rgh', name: 'Raghavendra', cls: C.son,
-            spouse: { id: 'ngr', name: 'Nagratna', cls: C.dil },
-            children: [{ id: 'uma_r', name: 'Uma', cls: C.daughter }]
-          },
-          {
-            id: 'smg', name: 'Sumangala ⚭', cls: C.daughter,
-            cousinSpouseId: 'mrd',
-            children: [{ id: 'snd', name: 'Sandesh', cls: C.son }]
-          }
-        ]
-      },
-      // ── 2. LAKSHMINARAYANA ──────────────────────────────────────────────────
-      {
-        id: 'ln', name: 'Lakshminarayana', cls: C.son,
-        spouse: { id: 'amb', name: 'Ambuja', cls: C.dil },
-        children: [
-          { id: 'par', name: 'Paresh', cls: C.son, tag: 'spouse unknown' },
-          {
-            id: 'ind', name: 'Indrakshi', cls: C.daughter,
-            spouse: { id: 'prk', name: 'Prakash', cls: C.sil },
-            children: [
-              { id: 'sm', name: 'Sanath Mihir', cls: C.son, spouse: { id: 'vsl', name: 'Vasanthalakshmi', cls: C.dil }, children: [{ id: 'unk1', name: 'Child (unknown)', cls: C.unknown }] }
-            ]
-          },
-          { id: 'sav', name: 'Savitha', cls: C.daughter, spouse: { id: 'lkm', name: 'Lakshmana', cls: C.sil }, children: [] }
-        ]
-      },
-      // ── 3. PADMAVATHI ───────────────────────────────────────────────────────
-      {
-        id: 'pdm', name: 'Padmavathi', cls: C.daughter,
-        spouse: { id: 'nrp', name: 'Narayanappa', cls: C.sil },
-        children: [
-          {
-            id: 'rkm', name: 'Rukmavathi', cls: C.daughter,
-            spouse: { id: 'krm', name: 'Krishnamurthy', cls: C.sil },
-            children: [
-              {
-                id: 'ysh', name: 'Yashodha', cls: C.daughter,
-                spouse: { id: 'gpk', name: 'Gopalakrishna', cls: C.sil },
-                children: [
-                  { id: 'ajt', name: 'Ajith', cls: C.son, spouse: { id: 'shr', name: 'Shruthi', cls: C.dil }, children: [{ id: 'dunk1', name: 'Daughter (unknown)', cls: C.unknown }] },
-                  { id: 'aksh', name: 'Akshatha', cls: C.daughter, spouse: { id: 'sur_y', name: 'Suresh (Y)', cls: C.sil }, children: [{ id: 'cunk1', name: 'Child (unknown)', cls: C.unknown }] }
-                ]
-              },
-              {
-                id: 'vtc', name: 'Venkatachala', cls: C.son,
-                spouse: { id: 'shnl', name: 'Shanthala', cls: C.dil },
-                children: [
-                  { id: 'snd_v', name: 'Sindhu', cls: C.daughter, spouse: { id: 'mjn', name: 'Manjunatha', cls: C.sil }, children: [{ id: 'dunk2', name: 'Daughter (unknown)', cls: C.unknown }] },
-                  { id: 'stv_v', name: 'Sathvik (V)', cls: C.son }
-                ]
-              }
-            ]
-          },
-          {
-            id: 'trb', name: 'Taarabai', cls: C.daughter,
-            spouse: { id: 'vkp', name: 'Venkappa', cls: C.sil },
-            children: [
-              { id: 'sur_t', name: 'Suresh (T)', cls: C.son, spouse: { id: 'vij', name: 'Vijaya', cls: C.dil }, children: [] },
-              { id: 'srk', name: 'Srikanth', cls: C.son, spouse: { id: 'bhr', name: 'Bharathi', cls: C.dil }, children: [{ id: 'snh', name: 'Sneha', cls: C.daughter }, { id: 'smr', name: 'Smruthi', cls: C.daughter }] },
-              { id: 'ash', name: 'Ashok', cls: C.son, spouse: { id: 'vid_t', name: 'Vidya (T)', cls: C.dil }, children: [{ id: 'kav', name: 'Kavi', cls: C.son }, { id: 'knt', name: 'Kanthi', cls: C.daughter }] }
-            ]
-          },
-          {
-            id: 'mj', name: 'Manjappa ⚭', cls: C.son,
-            cousinSpouseId: 'sk',
-            children: []
-          },
-          {
-            id: 'gth', name: 'Geetha', cls: C.daughter,
-            spouse: { id: 'prs_g', name: 'Prasad', cls: C.sil },
-            children: [
-              { id: 'gtm', name: 'Goutham', cls: C.son, spouse: { id: 'chet', name: 'Chethana', cls: C.dil }, children: [] },
-              { id: 'grv', name: 'Gourav', cls: C.son, spouse: { id: 'anu', name: 'Anusha', cls: C.dil }, children: [{ id: 'vkl', name: 'Vakul', cls: C.son }] }
-            ]
-          },
-          {
-            id: 'grm', name: 'Gurumurthy', cls: C.son,
-            spouse: { id: 'srv', name: 'Sharavathy', cls: C.dil },
-            children: [{ id: 'rmn', name: 'Ramanath', cls: C.son }]
-          },
-          {
-            id: 'ngr_p', name: 'Nagaraj', cls: C.son,
-            spouse: { id: 'shrd', name: 'Sharada', cls: C.dil },
-            children: [{ id: 'bhrg', name: 'Bhargav', cls: C.son, spouse: { id: 'sndh', name: 'Sandhya', cls: C.dil }, children: [] }]
-          },
-          { id: 'shlj', name: 'Shailaja', cls: C.daughter, spouse: { id: 'mdh', name: 'Madhava Holla', cls: C.sil }, children: [] },
-          {
-            id: 'rkh', name: 'Rekha', cls: C.daughter,
-            spouse: { id: 'prs_r', name: 'Purushotham', cls: C.sil },
-            children: [{ id: 'kvy', name: 'Kavya', cls: C.daughter, spouse: { id: 'hrp', name: 'Hariprasad', cls: C.sil }, children: [] }]
-          }
-        ]
-      },
-      // ── 4. PARVATHI (4th) ───────────────────────────────────────────────────
-      {
-        id: 'prv4', name: 'Parvathi (4th)', cls: C.daughter,
-        spouse: { id: 'vg4', name: 'Venkatagiri', cls: C.sil },
-        children: [
-          {
-            id: 'ln_p', name: 'Lakshminarayana (P)', cls: C.son,
-            spouse: { id: 'jyl', name: 'Jayalakshmi', cls: C.dil },
-            children: [
-              { id: 'apr', name: 'Aparna', cls: C.daughter, tag: 'spouse unknown' },
-              { id: 'poj', name: 'Pooja', cls: C.daughter, tag: 'spouse unknown' },
-              { id: 'rgh_p', name: 'Raghavendra (P)', cls: C.son, spouse: { id: 'sem', name: 'Seema', cls: C.dil }, children: [] }
-            ]
-          },
-          {
-            id: 'ans', name: 'Anusuya', cls: C.daughter,
-            spouse: { id: 'ln_h', name: 'Lakshminarayana (H)', cls: C.sil },
-            children: [
-              { id: 'sur_a', name: 'Suresh (A)', cls: C.son, spouse: { id: 'vsh', name: 'Vishalakshi', cls: C.dil }, children: [] },
-              { id: 'sth_a', name: 'Sathish (A)', cls: C.son, tag: 'spouse unknown' },
-              { id: 'sub', name: 'Subhash', cls: C.son, tag: 'spouse unknown' }
-            ]
-          },
-          { id: 'prb', name: 'Prabhavathi', cls: C.daughter, spouse: { id: 'gpl', name: 'Gopal', cls: C.sil }, children: [] },
-          {
-            id: 'nrh', name: 'Narahari', cls: C.son,
-            spouse: { id: 'jya', name: 'Jaya', cls: C.dil },
-            children: [
-              { id: 'bhr_n', name: 'Bharath', cls: C.son, tag: 'spouse unknown' },
-              { id: 'shr_n', name: 'Sharath', cls: C.son, tag: 'spouse unknown' }
-            ]
-          }
-        ]
-      },
-      // ── 5. SRINIVASA ────────────────────────────────────────────────────────
-      {
-        id: 'srv_s', name: 'Srinivasa', cls: C.son,
-        spouse: { id: 'kml', name: 'Kamala', cls: C.dil },
-        children: [
-          {
-            id: 'kus', name: 'Kusuma', cls: C.daughter,
-            spouse: { id: 'rud', name: 'Rudrappa RC Patil', cls: C.sil },
-            children: [
-              { id: 'mlg', name: 'Mallanagowda ★', cls: C.son, tag: 'stepson', spouse: { id: 'kvt', name: 'Kavitha', cls: C.dil }, children: [{ id: 'mhw', name: 'Maheshwari', cls: C.daughter }, { id: 'ans_m', name: 'Anushree', cls: C.daughter }] }
-            ]
-          },
-          {
-            id: 'sth_s', name: 'Sathish (S)', cls: C.son,
-            spouse: { id: 'vna', name: 'Veena', cls: C.dil },
-            children: [
-              { id: 'sndh_s', name: 'Sandhya (S)', cls: C.daughter, spouse: { id: 'prs_s', name: 'Prashanth', cls: C.sil }, children: [{ id: 'ary', name: 'Arya', cls: C.son }] },
-              { id: 'bhg', name: 'Bhagya †', cls: C.deceased }
-            ]
-          }
-        ]
-      },
-      // ── 6. GOVINDA ──────────────────────────────────────────────────────────
-      {
-        id: 'gov', name: 'Govinda', cls: C.son,
-        spouse: { id: 'rtn', name: 'Rathna', cls: C.dil },
-        children: [
-          { id: 'klp', name: 'Kalpana', cls: C.daughter, spouse: { id: 'rvp', name: 'Raviprakash', cls: C.sil }, children: [{ id: 'sknd', name: 'Skanda', cls: C.son }] },
-          { id: 'knc', name: 'Kanchana', cls: C.daughter, spouse: { id: 'vjk', name: 'Vijayakumar', cls: C.sil }, children: [{ id: 'dnv', name: 'Dhanvi', cls: C.daughter }] },
-          { id: 'mhs', name: 'Mahesh', cls: C.son, spouse: { id: 'uma_g', name: 'Uma (G)', cls: C.dil }, children: [{ id: 'stv_g', name: 'Sathvik (G)', cls: C.son }] }
-        ]
-      },
-      // ── 7. GOPALA ───────────────────────────────────────────────────────────
-      {
-        id: 'gop', name: 'Gopala', cls: C.son,
-        spouse: { id: 'vrm', name: 'Varamahalakshmi', cls: C.dil },
-        children: [
-          {
-            id: 'smt', name: 'Sumitra', cls: C.daughter,
-            spouse: { id: 'krm_g', name: 'Krishnamurthy (G)', cls: C.sil },
-            children: [
-              { id: 'aar', name: 'Aarathi', cls: C.daughter, tag: 'spouse unknown' },
-              { id: 'amb_g', name: 'Ambika', cls: C.daughter, tag: 'spouse unknown' },
-              { id: 'thm', name: 'Thimmappa', cls: C.son, tag: 'spouse unknown' }
-            ]
-          },
-          {
-            id: 'rvn', name: 'Ravindra', cls: C.son,
-            spouse: { id: 'vni', name: 'Vani', cls: C.dil },
-            children: [{ id: 'sup', name: 'Souparnika', cls: C.daughter, tag: 'spouse unknown' }]
-          }
-        ]
-      },
-      // ── 8. KAMALAKSHI ───────────────────────────────────────────────────────
-      {
-        id: 'kmlk', name: 'Kamalakshi', cls: C.daughter,
-        spouse: { id: 'rmc_h', name: 'Ramachandra (H)', cls: C.sil },
-        children: [
-          {
-            id: 'roh', name: 'Rohini', cls: C.daughter,
-            spouse: { id: 'prk_k', name: 'Prakash (K)', cls: C.sil },
-            children: [
-              { id: 'var', name: 'Varsha', cls: C.daughter, spouse: { id: 'nik', name: 'Nikhil', cls: C.sil }, children: [{ id: 'yth', name: 'Yatharva', cls: C.son }, { id: 'ish', name: 'Ishitha', cls: C.daughter }] }
-            ]
-          },
-          {
-            id: 'mrd', name: 'Muralidhara ⚭', cls: C.son,
-            cousinSpouseId: 'smg',
-            children: []
-          }
-        ]
-      },
-      // ── 9. PRABHAKARA ───────────────────────────────────────────────────────
-      {
-        id: 'pbk', name: 'Prabhakara', cls: C.son,
-        spouse: { id: 'kst', name: 'Kasturi', cls: C.dil },
-        children: [
-          { id: 'nvn', name: 'Naveen', cls: C.son, spouse: { id: 'swt', name: 'Shwetha', cls: C.dil }, children: [{ id: 'abv', name: 'Abhinav', cls: C.son }] },
-          { id: 'chet_p', name: 'Chethana (P)', cls: C.daughter, spouse: { id: 'chr', name: 'Charan', cls: C.sil }, children: [{ id: 'adt', name: 'Adithi', cls: C.daughter }] }
-        ]
-      },
-      // ── 10. SRIDHARA ────────────────────────────────────────────────────────
-      {
-        id: 'srd', name: 'Sridhara', cls: C.son,
-        spouse: { id: 'ngv', name: 'Nagaveni', cls: C.dil },
-        children: [
-          {
-            id: 'vkr', name: 'Vikram', cls: C.son,
-            spouse: { id: 'vid', name: 'Vidya', cls: C.dil },
-            children: [
-              { id: 'anp', name: 'Anupama ✦', cls: C.creator, tag: 'Creator of Website' }
-            ]
-          }
-        ]
-      }
-    ]
-  };
+  // Couple row (person + optional spouse)
+  const coupleRow = document.createElement('div');
+  coupleRow.className = 'couple-row';
 
-  // ── LAYOUT ENGINE ───────────────────────────────────────────────────────────
-  const canvas  = document.getElementById('tree-canvas');
-  const svg     = document.getElementById('lines-svg');
-  const wrap    = document.getElementById('tree-wrap');
-  let   scale   = 1;
-  const positions = {};   // id → {x, y, w, h}
-  const cousinLinks = []; // [{from, to}]
+  // Person node
+  const nodeEl = document.createElement('div');
+  nodeEl.className = 'node ' + person.cls;
+  nodeEl.id = 'node-' + person.id;
+  if (person.id === 'anp') nodeEl.id = 'creator';
 
-  function nodeH(person) {
-    return person.tag ? 60 : NH;
+  const hasChildren = person.children && person.children.length > 0;
+  const hasSpouse   = !!person.spouse;
+
+  if (hasChildren || (isFounder)) {
+    nodeEl.classList.add('clickable');
+    nodeEl.onclick = (e) => {
+      e.stopPropagation();
+      toggleNode(person, col);
+    };
   }
 
-  // Returns width of subtree rooted at person (including spouse side-by-side)
-  function subtreeWidth(person) {
-    const coupleW = person.spouse ? NW * 2 + GAP_X : NW;
-    if (!person.children || person.children.length === 0) return coupleW;
-    const childrenW = person.children.reduce((sum, c) => sum + subtreeWidth(c), 0)
-                    + (person.children.length - 1) * GAP_X;
-    return Math.max(coupleW, childrenW);
+  nodeEl.innerHTML = `<div class="node-name">${person.name}</div>`;
+  coupleRow.appendChild(nodeEl);
+
+  // Spouse node (hidden initially, shown when parent clicks this node)
+  if (hasSpouse) {
+    const conn = document.createElement('div');
+    conn.className = 'couple-connector';
+    conn.dataset.spouseConn = person.id;
+    conn.style.display = 'none';
+    coupleRow.appendChild(conn);
+
+    const spouseEl = document.createElement('div');
+    spouseEl.className = 'node ' + person.spouse.cls;
+    spouseEl.id = 'node-' + person.spouse.id;
+    spouseEl.dataset.spouseOf = person.id;
+    spouseEl.style.display = 'none';
+    spouseEl.innerHTML = `<div class="node-name">${person.spouse.name}</div>`;
+    coupleRow.appendChild(spouseEl);
   }
 
-  function place(person, x, y) {
-    const sw   = subtreeWidth(person);
-    const cx   = x + sw / 2; // centre of subtree
-    const h    = nodeH(person);
+  col.appendChild(coupleRow);
 
-    // Place person node centred
-    const px = cx - NW / 2;
-    positions[person.id] = { x: px, y, w: NW, h };
+  // Children wrap (hidden initially)
+  if (hasChildren) {
+    const vLine = document.createElement('div');
+    vLine.className = 'v-line';
+    vLine.dataset.vlineOf = person.id;
+    vLine.style.height = '30px';
+    vLine.style.display = 'none';
+    col.appendChild(vLine);
 
-    // Place spouse to the right
-    if (person.spouse) {
-      positions[person.spouse.id] = { x: px + NW + GAP_X, y, w: NW, h };
+    const childrenWrap = document.createElement('div');
+    childrenWrap.className = 'children-wrap';
+    childrenWrap.dataset.childrenOf = person.id;
+
+    const childrenRow = document.createElement('div');
+    childrenRow.className = 'children-row';
+    childrenRow.dataset.rowOf = person.id;
+
+    for (const child of person.children) {
+      const childCol = buildNode(child, false);
+      childrenRow.appendChild(childCol);
     }
 
-    // Collect cousin links
-    if (person.cousinSpouseId) {
-      cousinLinks.push({ from: person.id, to: person.cousinSpouseId });
-    }
-
-    // Place children
-    if (person.children && person.children.length > 0) {
-      const childY = y + h + GAP_Y;
-      let childX   = x;
-      for (const child of person.children) {
-        place(child, childX, childY);
-        childX += subtreeWidth(child) + GAP_X;
-      }
-    }
+    childrenWrap.appendChild(childrenRow);
+    col.appendChild(childrenWrap);
   }
 
-  function createNode(person) {
-    const pos  = positions[person.id];
-    const div  = document.createElement('div');
-    div.className = 'node ' + person.cls;
-    div.id        = person.id === 'anp' ? 'creator' : person.id;
-    div.style.left   = pos.x + 'px';
-    div.style.top    = pos.y + 'px';
-    div.style.width  = NW + 'px';
-    div.style.minHeight = pos.h + 'px';
-    div.innerHTML = `<div class="node-name">${person.name}</div>${person.tag ? `<div class="node-tag">${person.tag}</div>` : ''}`;
-    canvas.appendChild(div);
+  return col;
+}
 
-    if (person.spouse && positions[person.spouse.id]) {
-      const sp   = person.spouse;
-      const spos = positions[sp.id];
-      const sdiv = document.createElement('div');
-      sdiv.className = 'node ' + sp.cls;
-      sdiv.id        = sp.id;
-      sdiv.style.left   = spos.x + 'px';
-      sdiv.style.top    = spos.y + 'px';
-      sdiv.style.width  = NW + 'px';
-      sdiv.style.minHeight = spos.h + 'px';
-      sdiv.innerHTML = `<div class="node-name">${sp.name}</div>`;
-      canvas.appendChild(sdiv);
+function toggleNode(person, col) {
+  const hasChildren  = person.children && person.children.length > 0;
+  const hasSpouse    = !!person.spouse;
+  const nodeEl       = col.querySelector('.node');
+  const isExpanded   = nodeEl.classList.contains('expanded');
+
+  if (isExpanded) {
+    // Collapse
+    nodeEl.classList.remove('expanded');
+    // Hide spouse
+    if (hasSpouse) {
+      const conn    = col.querySelector('[data-spouse-conn]');
+      const spouseEl = col.querySelector('[data-spouse-of]');
+      if (conn)    conn.style.display    = 'none';
+      if (spouseEl) spouseEl.style.display = 'none';
     }
-
-    if (person.children) {
-      for (const child of person.children) createNode(child);
+    // Hide children
+    if (hasChildren) {
+      const vLine       = col.querySelector('[data-vline-of]');
+      const childrenWrap = col.querySelector('[data-children-of]');
+      if (vLine)        vLine.style.display        = 'none';
+      if (childrenWrap) childrenWrap.style.display  = 'none';
     }
-  }
-
-  function drawLines(person) {
-    const pos = positions[person.id];
-    if (!pos) return;
-
-    // Line between person and spouse
-    if (person.spouse && positions[person.spouse.id]) {
-      const sp = positions[person.spouse.id];
-      addLine(pos.x + NW, pos.y + pos.h / 2, sp.x, sp.y + sp.h / 2);
+  } else {
+    // Expand
+    nodeEl.classList.add('expanded');
+    // Show spouse
+    if (hasSpouse) {
+      const conn     = col.querySelector(`[data-spouse-conn="${person.id}"]`);
+      const spouseEl = col.querySelector(`[data-spouse-of="${person.id}"]`);
+      if (conn)     conn.style.display     = 'flex';
+      if (spouseEl) spouseEl.style.display = 'block';
     }
-
-    // Lines to children
-    if (person.children && person.children.length > 0) {
-      const parentMidX = pos.x + NW / 2 + (person.spouse ? (NW + GAP_X) / 2 : 0);
-      const parentBottomY = pos.y + pos.h;
-      const midY = parentBottomY + GAP_Y / 2;
-
-      for (const child of person.children) {
-        const cpos = positions[child.id];
-        if (!cpos) continue;
-        const childMidX = cpos.x + NW / 2;
-        // Vertical from parent down to midY
-        addLine(parentMidX, parentBottomY, parentMidX, midY);
-        // Horizontal to child midX
-        addLine(parentMidX, midY, childMidX, midY);
-        // Vertical down to child
-        addLine(childMidX, midY, childMidX, cpos.y);
-        drawLines(child);
-      }
+    // Show children
+    if (hasChildren) {
+      const vLine       = col.querySelector(`[data-vline-of="${person.id}"]`);
+      const childrenWrap = col.querySelector(`[data-children-of="${person.id}"]`);
+      if (vLine)        vLine.style.display        = 'block';
+      if (childrenWrap) childrenWrap.style.display = 'flex';
     }
   }
+}
 
-  function addLine(x1, y1, x2, y2, cls) {
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
-    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-    if (cls) line.setAttribute('class', cls);
-    svg.appendChild(line);
+function expandAll(person, col) {
+  const hasChildren = person.children && person.children.length > 0;
+  const hasSpouse   = !!person.spouse;
+  const nodeEl      = col.querySelector(':scope > .couple-row > .node');
+
+  if (!nodeEl) return;
+  nodeEl.classList.add('expanded');
+
+  if (hasSpouse) {
+    const conn     = col.querySelector(`[data-spouse-conn="${person.id}"]`);
+    const spouseEl = col.querySelector(`[data-spouse-of="${person.id}"]`);
+    if (conn)     conn.style.display     = 'flex';
+    if (spouseEl) spouseEl.style.display = 'block';
   }
 
-  function drawCousinLinks() {
-    for (const link of cousinLinks) {
-      const a = positions[link.from];
-      const b = positions[link.to];
-      if (!a || !b) continue;
-      // Dashed line between the two cousin-marriage nodes
-      addLine(a.x + NW / 2, a.y + a.h, b.x + NW / 2, b.y + b.h, 'cousin-link');
+  if (hasChildren) {
+    const vLine        = col.querySelector(`[data-vline-of="${person.id}"]`);
+    const childrenWrap = col.querySelector(`[data-children-of="${person.id}"]`);
+    if (vLine)         vLine.style.display        = 'block';
+    if (childrenWrap)  childrenWrap.style.display = 'flex';
+
+    const childCols = childrenWrap.querySelectorAll(':scope > .children-row > .child-col');
+    person.children.forEach((child, i) => {
+      if (childCols[i]) expandAll(child, childCols[i]);
+    });
+  }
+}
+
+function collapseAll(person, col) {
+  const hasChildren = person.children && person.children.length > 0;
+  const hasSpouse   = !!person.spouse;
+  const nodeEl      = col.querySelector(':scope > .couple-row > .node');
+
+  if (!nodeEl) return;
+  nodeEl.classList.remove('expanded');
+
+  if (hasSpouse) {
+    const conn     = col.querySelector(`[data-spouse-conn="${person.id}"]`);
+    const spouseEl = col.querySelector(`[data-spouse-of="${person.id}"]`);
+    if (conn)     conn.style.display     = 'none';
+    if (spouseEl) spouseEl.style.display = 'none';
+  }
+
+  if (hasChildren) {
+    const vLine        = col.querySelector(`[data-vline-of="${person.id}"]`);
+    const childrenWrap = col.querySelector(`[data-children-of="${person.id}"]`);
+    if (vLine)         vLine.style.display        = 'none';
+    if (childrenWrap)  childrenWrap.style.display = 'none';
+
+    const childCols = childrenWrap ? childrenWrap.querySelectorAll(':scope > .children-row > .child-col') : [];
+    person.children.forEach((child, i) => {
+      if (childCols[i]) collapseAll(child, childCols[i]);
+    });
+  }
+}
+
+function toggleAll() {
+  const btn = document.querySelector('.show-all-btn');
+  if (showAllState) {
+    collapseAll(DATA, root.querySelector('.child-col'));
+    btn.textContent = 'Show All';
+    showAllState = false;
+  } else {
+    expandAll(DATA, root.querySelector('.child-col'));
+    btn.textContent = 'Collapse All';
+    showAllState = true;
+  }
+}
+
+// ── LEGEND ───────────────────────────────────────────────────────────────────
+function toggleLegend() {
+  const body = document.getElementById('legend-body');
+  const tog  = document.querySelector('.legend-toggle');
+  body.classList.toggle('open');
+  tog.textContent = body.classList.contains('open') ? '▼ Legend' : '▲ Legend';
+}
+
+// ── ZOOM ─────────────────────────────────────────────────────────────────────
+let currentScale = 1;
+
+function zoom(delta) {
+  currentScale = Math.min(Math.max(currentScale + delta, 0.2), 2);
+  root.style.transform = `scale(${currentScale})`;
+}
+
+function zoomFit() {
+  const vp = document.getElementById('viewport');
+  const rw = root.scrollWidth;
+  const rh = root.scrollHeight;
+  const vw = vp.clientWidth  - 80;
+  const vh = vp.clientHeight - 80;
+  currentScale = Math.min(vw / rw, vh / rh, 1);
+  root.style.transform = `scale(${currentScale})`;
+  root.style.transformOrigin = 'top center';
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+const founderCol = buildNode(DATA, true);
+root.appendChild(founderCol);
+
+// Creator link
+if (location.hash === '#creator') {
+  setTimeout(() => {
+    const el = document.getElementById('creator');
+    if (el) {
+      expandAll(DATA, founderCol);
+      showAllState = true;
+      document.querySelector('.show-all-btn').textContent = 'Collapse All';
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('highlight-pulse');
+      }, 300);
     }
-  }
-
-  function render() {
-    // Clear
-    canvas.innerHTML = '<svg id="lines-svg"></svg>';
-    const svgEl = document.getElementById('lines-svg');
-
-    // Layout
-    place(tree, 0, 0);
-
-    // Find canvas size
-    let maxX = 0, maxY = 0;
-    for (const pos of Object.values(positions)) {
-      maxX = Math.max(maxX, pos.x + pos.w);
-      maxY = Math.max(maxY, pos.y + pos.h);
-    }
-    canvas.style.width  = (maxX + 40) + 'px';
-    canvas.style.height = (maxY + 40) + 'px';
-    svgEl.setAttribute('width',  maxX + 40);
-    svgEl.setAttribute('height', maxY + 40);
-
-    // Draw nodes
-    createNode(tree);
-
-    // Draw lines
-    drawLines(tree);
-    drawCousinLinks();
-  }
-
-  // ── ZOOM ────────────────────────────────────────────────────────────────────
-  function applyScale() {
-    canvas.style.transform = `scale(${scale})`;
-  }
-
-  function zoomIn()  { scale = Math.min(scale + 0.1, 2);   applyScale(); }
-  function zoomOut() { scale = Math.max(scale - 0.1, 0.2); applyScale(); }
-
-  function zoomFit() {
-    const ww = wrap.clientWidth  - 48;
-    const wh = wrap.clientHeight - 48;
-    const cw = parseFloat(canvas.style.width);
-    const ch = parseFloat(canvas.style.height);
-    scale = Math.min(ww / cw, wh / ch, 1);
-    applyScale();
-    canvas.style.transformOrigin = 'top left';
-  }
-
-  // ── INIT ────────────────────────────────────────────────────────────────────
-  render();
-  setTimeout(zoomFit, 100);
-
-  // Scroll to creator node if hash
-  if (location.hash === '#creator') {
-    setTimeout(() => {
-      const el = document.getElementById('creator');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 300);
-  }
-  </script>
+  }, 200);
+}
+</script>
 
 </body>
 </html>
